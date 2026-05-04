@@ -3,7 +3,7 @@ import { getReservationInfo } from '../services/getReservationInfo'
 import { useEffect, useState } from "react"
 import { formatDateShort } from "../services/formatDate"
 
-function ReservationProfile ({ bookList }) {
+function ReservationProfile () {
     const [loading, setLoading] = useState(false)
     
     const [reservationList, setReservationList] = useState(null)

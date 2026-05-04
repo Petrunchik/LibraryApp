@@ -1,10 +1,11 @@
 import { formatDateShort } from "../services/formatDate"
 
 function ReservationProfileDetail ({ title, author, returnToDate, expireToDate, status, imageUrl }) {
-
     const bookStatus = expireToDate === null
     ? <div className="booking-status wait"> <i className="fas fa-hourglass-half"></i> Ожидание книги </div>
-    : <div className="booking-status ready"> <i className="fas fa-check-circle"></i> Готова с {formatDateShort(expireToDate)} </div>
+    : status === "accepted"
+    ? <div className="booking-status ready"> <i className="fas fa-check-circle"></i> Готова с {formatDateShort(expireToDate)} </div>
+    : <div className="booking-status rejected"> <i className="fas fa-check-circle"></i> Отклонено {formatDateShort(expireToDate)} </div>
 
     return (
         <div className="history-item">

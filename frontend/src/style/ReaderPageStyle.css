@@ -510,6 +510,11 @@
       background: #fff0e0;
       color: #bc6f42;
     }
+    
+    .booking-status.rejected {
+      background: #fde7e9;
+      color: #c92a2a;
+    }
 
     /* кнопка-триггер */
     .demo-toggle-btn {
