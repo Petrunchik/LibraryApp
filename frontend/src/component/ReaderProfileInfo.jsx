@@ -4,14 +4,11 @@ import { formatDate } from '../services/formatDate';
 import { displayPhone } from '../services/displayPhone';
 import { getUserInfo } from "../services/getUserInfo"
 import { toast } from '../hooks/useToast';
+import { copyField } from '../services/copyField';
 
 function ReaderProfileInfo ({ showFines, setShowFines }) {
   const [userData, setUserData] = useState(null)
   const [loading, setLoading] = useState(true)
-
-  const copyId = (text) => {
-        navigator.clipboard.writeText(text)
-    }
 
   useEffect(() => {
       const getUser = async () => {
@@ -20,16 +17,15 @@ function ReaderProfileInfo ({ showFines, setShowFines }) {
           setUserData(user.data)
           setLoading(false)
         } else {
-          toast.error("Ошибка получения данных")
+          toast.error("Ошибка получения данных пользователя!")
         }
       }
       getUser()
     }, [])
-    console.log(userData)
 
     const idDisplay = loading 
     ? <span className="fas fa-spinner fa-pulse" style={{ marginLeft: 'auto' }}></span>
-    : <span className="info-value" style={{cursor: "pointer"}} onClick={() => copyId(userData?.id)}>
+    : <span className="info-value" style={{cursor: "pointer"}} onClick={() => copyField(userData?.id)}>
         {userData?.id ?? "ID"}
     </span>
 

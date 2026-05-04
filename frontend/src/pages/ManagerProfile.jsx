@@ -8,9 +8,23 @@ import SearchReaderOrBook from '../component/SearchReaderOrBook';
 
 import { logout } from '../services/logout'
 import { RedirectToHome } from '../services/redirectToHome';
+import { useEffect, useState } from 'react';
+import { getUserInfo } from '../services/getUserInfo';
 
 function ManagerProfile () {
+  const [userData, setUserData] = useState(null)
 
+  useEffect(() => {
+        const getUser = async () => {
+          const user = await getUserInfo()
+          if (user.success){
+            setUserData(user.data)
+          } else {
+            toast.error("Ошибка получения данных пользователя!")
+          }
+        }
+        getUser()
+      }, [])
     return (
         <div className="dashboard-container">
           {/* ШАПКА */}
@@ -21,7 +35,7 @@ function ManagerProfile () {
               <span className="logo-tagline">библиотека</span>
             </div>
             <div className="manager-badge">
-              <i className="fas fa-user-tie"></i> Панель менеджера · Иванов А.А.
+              <i className="fas fa-user-tie"></i> Панель менеджера · {userData?.first_name} {userData?.last_name}
             </div>
             <div className="logout-btn" onClick={() => logout()}><i className="fas fa-sign-out-alt"></i> Выйти из профиля</div>
           </header>
