@@ -1,1 +1,11 @@
 .DS_Store
+/example
+frontend/.env
+index.html
+style.css
+backend/__pycache__.py
+backend/app/auth/__pycache__.py
+backend/app/database/__pycache__.py
+backend/app/migration/
+backend/app/routers/__pycache__.py
+backend/app/schemas/__pycache__.py

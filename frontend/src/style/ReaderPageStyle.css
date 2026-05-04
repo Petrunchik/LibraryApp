@@ -1,0 +1,560 @@
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f7f5f2;
+      color: #2c2a28;
+      line-height: 1.5;
+      padding: 24px 32px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .profile-container {
+      max-width: 1440px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* ========== ШАПКА ========== */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .logo-area {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .logo-icon {
+      font-size: 32px;
+      color: #6b4e3a;
+    }
+
+    .logo-text {
+      font-size: 28px;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+      color: #3a2e28;
+    }
+
+    .logo-tagline {
+      font-size: 14px;
+      font-weight: 400;
+      color: #7b6b5e;
+      margin-left: 6px;
+    }
+
+    .header-placeholder {
+      width: 52px;
+      visibility: hidden;
+    }
+
+    /* ========== ОСНОВНАЯ СЕТКА ========== */
+    .profile-grid {
+      display: grid;
+      grid-template-columns: 370px 1fr;
+      gap: 32px;
+      margin-top: 12px;
+      align-items: start;
+    }
+
+    /* ЛЕВАЯ КОЛОНКА (sticky) */
+    .profile-card {
+      background: white;
+      border-radius: 32px;
+      padding: 36px 28px;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.04);
+      border: 1px solid #ede5dd;
+      position: sticky;
+      top: 24px;
+      align-self: start;
+    }
+
+    .avatar-large {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .avatar-circle {
+      background: linear-gradient(145deg, #e2d4c8, #d1c0b0);
+      width: 110px;
+      height: 110px;
+      border-radius: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 58px;
+      color: #5a4536;
+      border: 3px solid white;
+      box-shadow: 0 12px 18px -8px rgba(0, 0, 0, 0.1);
+    }
+
+    .user-name {
+      font-size: 26px;
+      font-weight: 700;
+      text-align: center;
+      color: #2e261f;
+      margin-bottom: 6px;
+    }
+
+    .user-role {
+      text-align: center;
+      background: #f1ebe6;
+      display: inline-block;
+      width: auto;
+      margin: 0 auto 24px;
+      padding: 6px 18px;
+      border-radius: 60px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #6b4e3a;
+    }
+
+    /* Информационные строки — без горизонтального скролла */
+    .info-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 0;
+      border-bottom: 1px solid #ede5dd;
+      font-size: 15px;
+      flex-wrap: wrap;
+    }
+
+    .info-row:last-of-type {
+      border-bottom: none;
+    }
+
+    .info-row i {
+      width: 24px;
+      color: #8b7667;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .info-label {
+      font-weight: 500;
+      color: #5c4d41;
+      min-width: 100px;
+      flex-shrink: 0;
+    }
+
+    .info-value {
+      color: #2c2a28;
+      font-weight: 500;
+      font-family: monospace;
+      letter-spacing: 0.3px;
+      word-break: keep-all;
+      overflow-x: visible;
+      white-space: normal;
+      flex: 1;
+    }
+
+    /* Блок кнопок */
+    .settings-group {
+      margin-top: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .double-buttons {
+      display: flex;
+      gap: 12px;
+      width: 100%;
+    }
+
+    .double-buttons .sec-btn {
+      flex: 1;
+      justify-content: center;
+    }
+
+    .logout-full {
+      width: 100%;
+      justify-content: center;
+      background: #fff0ea;
+      border-color: #e3cbbc;
+      color: #b45a3b;
+    }
+
+    .logout-full:hover {
+      background: #fae1d4;
+      color: #8f4024;
+    }
+
+    .sec-btn {
+      background: white;
+      border: 1px solid #ddd2c8;
+      padding: 10px 20px;
+      border-radius: 40px;
+      font-weight: 500;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .sec-btn:hover {
+      background: #f5ede6;
+      border-color: #c9b6a8;
+    }
+
+    /* ПРАВАЯ ЧАСТЬ */
+    .history-section {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .card-panel {
+      background: white;
+      border-radius: 32px;
+      padding: 28px 26px;
+      border: 1px solid #ede5dd;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.02);
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+      border-bottom: 2px solid #f0e7e0;
+      padding-bottom: 14px;
+    }
+
+    .panel-header h2 {
+      font-size: 22px;
+      font-weight: 600;
+      color: #3a2e28;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .badge-count {
+      background: #e7dbd2;
+      padding: 4px 12px;
+      border-radius: 40px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    /* БЛОК ШТРАФОВ */
+    .fine-section-hidden {
+      background: #fff6f0;
+      border-radius: 24px;
+      padding: 20px 22px;
+      margin-bottom: 28px;
+      border: 1px solid #f3e2d6;
+      flex-direction: column;
+    }
+
+    .fine-section-hidden.fine-visible {
+      display: flex;
+    }
+
+    .fine-title {
+      font-weight: 700;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      color: #bc6f42;
+    }
+
+    .fine-amount {
+      font-size: 32px;
+      font-weight: 800;
+      color: #c25b2c;
+      letter-spacing: -0.5px;
+    }
+
+    .fine-breakdown {
+      background: #fffaf5;
+      border-radius: 20px;
+      padding: 14px 16px;
+      margin: 16px 0 8px;
+      font-size: 14px;
+    }
+
+    .fine-book-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px dashed #f0dfd3;
+    }
+
+    .fine-book-row:last-child {
+      border-bottom: none;
+    }
+
+    .fine-book-title {
+      font-weight: 600;
+      color: #4f3a2b;
+    }
+
+    .fine-book-days {
+      color: #a16542;
+      font-size: 13px;
+    }
+
+    .fine-detail-summary {
+      font-size: 13px;
+      color: #a07f68;
+      margin-top: 12px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .pay-btn {
+      margin-top: 16px;
+      background: #f0e2d8;
+      border: none;
+      width: 100%;
+      padding: 12px;
+      border-radius: 60px;
+      font-weight: 600;
+      color: #5c3d2c;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .pay-btn:hover {
+      background: #e4d2c4;
+    }
+
+    /* Список книг */
+    .books-history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .history-item {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      padding: 16px 0;
+      border-bottom: 1px solid #f0e8e1;
+      flex-wrap: wrap;
+    }
+
+    .history-cover {
+      width: 70px;
+      height: 90px;
+      background: linear-gradient(145deg, #e2d4c8, #d1c0b0);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      color: #8b7869;
+    }
+    .history-cover img {
+      width: 90%;
+      height: 90%;
+    }
+
+    .history-info {
+      flex: 2;
+      min-width: 160px;
+    }
+
+    .history-title {
+      font-weight: 700;
+      font-size: 17px;
+      color: #2e261f;
+    }
+
+    .history-meta {
+      font-size: 13px;
+      color: #8f7f71;
+      margin-top: 6px;
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    .history-status {
+      background: #e7f1e4;
+      padding: 5px 14px;
+      border-radius: 30px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #2d6a4f;
+    }
+
+    .history-status.overdue {
+      background: #ffe1d6;
+      color: #bb5b2c;
+    }
+
+    .history-status.returned {
+      background: #e9e6e2;
+      color: #5f5b56;
+    }
+
+    .fine-badge {
+      background: #f8e1d4;
+      border-radius: 30px;
+      padding: 5px 12px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #bc5a2c;
+    }
+
+    /* ===== НОВЫЙ БЛОК АКТИВНЫЕ БРОНИРОВАНИЯ (карточки) ===== */
+    .bookings-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .booking-card {
+      background: #fefaf5;
+      border-radius: 20px;
+      padding: 18px 20px;
+      border: 1px solid #f0e4da;
+      transition: all 0.2s;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .booking-card:hover {
+      background: #fffcf8;
+      border-color: #e0d0c2;
+      transform: translateX(2px);
+    }
+
+    .booking-info {
+      flex: 2;
+      min-width: 200px;
+    }
+
+    .booking-title {
+      font-weight: 700;
+      font-size: 17px;
+      color: #2e261f;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .booking-title i {
+      color: #8b7667;
+      font-size: 16px;
+    }
+
+    .booking-meta {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      font-size: 13px;
+      color: #7f6e60;
+    }
+
+    .booking-meta span {
+      background: #ffffffcc;
+      padding: 4px 10px;
+      border-radius: 30px;
+    }
+
+    .booking-status {
+      background: #e3d9d1;
+      border-radius: 60px;
+      padding: 8px 18px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #4f3a2b;
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .booking-status.ready {
+      background: #e1f0e4;
+      color: #2d6a4f;
+    }
+
+    .booking-status.wait {
+      background: #fff0e0;
+      color: #bc6f42;
+    }
+
+    /* кнопка-триггер */
+    .demo-toggle-btn {
+      margin-top: 4px;
+      background: #e9dfd6;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 40px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #5c4537;
+    }
+
+    .demo-toggle-btn:hover {
+      background: #ddd0c4;
+    }
+
+    .footer-note {
+      margin-top: 48px;
+      text-align: center;
+      color: #a39283;
+      font-size: 14px;
+      border-top: 1px dashed #ddd2c8;
+      padding-top: 28px;
+    }
+
+    @media (max-width: 880px) {
+      body { padding: 16px; }
+      .profile-grid { grid-template-columns: 1fr; gap: 24px; }
+      .profile-card { position: static; }
+      .header { flex-direction: column; align-items: stretch; }
+      .search-wrapper { max-width: 100%; margin: 0; }
+      .header-placeholder { display: none; }
+      .booking-card { flex-direction: column; align-items: flex-start; }
+      .booking-status { align-self: flex-start; }
+    }
+
+    @media (max-width: 500px) {
+      .history-item { flex-direction: column; align-items: flex-start; }
+      .panel-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+      .double-buttons { flex-direction: column; }
+      .info-row { flex-wrap: wrap; }
+    }
