@@ -100,7 +100,7 @@ function ReadingProfileHistory() {
                 <h2>
                     <i className="fas fa-history"></i> История чтения
                 </h2>
-                <span className="badge-count" style={{cursor: "pointer"}} onClick={() => reloadButton()}>последние 5</span>
+                <span className="badge-count" style={{cursor: "pointer"}} onClick={() => reloadButton()}>последние {historyReadingBookList?.length || 0}</span>
             </div>
             <div className="books-history-list">
                 {loading
