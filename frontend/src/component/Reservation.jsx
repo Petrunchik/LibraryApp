@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { reservationGet } from "../services/reservationGet"
+import { reservationGet } from "../services/managerProfile"
 import ReservationItem from "./ReservationItem"
 
 function Reservation () {
@@ -18,7 +18,7 @@ function Reservation () {
   useEffect(() => {
     const getReservationList = async () => {
       const reservations = await reservationGet()
-      setReservationList(reservations)
+      setReservationList(reservations.data)
       setLoading(false)
     }
     getReservationList()
@@ -48,6 +48,7 @@ function Reservation () {
                 status={item.status}
                 firstName={item.first_name}
                 lastName={item.last_name}
+                setReload={reloadButton}
               />
             )
             })}

@@ -9,3 +9,9 @@ from datetime import datetime
 
 class ReseravtionCreate(BaseModel):
     book_id: UUID = Field(..., description="ID книги")
+
+
+class ReservationIssue(BaseModel):
+    reader_id: UUID = Field(..., description="ID пользователя")
+    book_id: UUID = Field(..., description="ID книги")
+    status: str = Field(..., description="Новый статус книги")

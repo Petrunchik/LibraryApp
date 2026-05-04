@@ -7,8 +7,8 @@ from fastapi import APIRouter, Depends, status, HTTPException, Response, Request
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.database.db_depends import get_async_db
-from app.schemas.reservation import ReseravtionCreate
-from datetime import datetime, timedelta
+from app.schemas.reservation import ReseravtionCreate, ReservationIssue
+from datetime import datetime, timedelta, date
 from app.auth.auth import get_current_manager, get_current_reader
 
 router = APIRouter(
@@ -26,12 +26,16 @@ router = APIRouter(
 @router.get("/")
 async def get_all_reservation(
     db: AsyncSession = Depends(get_async_db),
+    current_user: User = Depends(get_current_manager)
     ):
+    """
+    Получает все отправленные запросы на бронирование, доступно менеджеру.
+    """
     stmt = await db.execute(
         select(Reservation, Book, User)
         .join(Reservation.book)
         .join(Reservation.reader)
-        .where(Reservation.status.not_in(["issued", "rejected"]))
+        .where(Reservation.status == "sent")
     )
     reservations = stmt.all()
     response_answer = []
@@ -98,3 +102,41 @@ async def create_request(
     await db.commit()
     await db.refresh(data)
     return data
+
+
+@router.post("/moderate")
+async def review_booking_request(
+    resesrvation_data: ReservationIssue,
+    db: AsyncSession = Depends(get_async_db),
+    current_user: User = Depends((get_current_manager))
+    ):
+    """
+    Отметка готовности книги к выдаче или отклонение запроса в профиле менеджера.
+    """
+
+    reservation = await db.scalar(
+        select(Reservation)
+        .where(Reservation.reader_id == resesrvation_data.reader_id)
+    )
+    if reservation is None:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Бронирование не найдено")
+    
+    result = await db.scalar(
+        select(func.count(BookCopy.id))
+        .where(
+            BookCopy.book_id == resesrvation_data.book_id,
+            BookCopy.status == "доступна"
+        )
+    )
+
+    if result <= 0:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Книги нет в наличии")
+    
+    reservation.status = resesrvation_data.status
+    reservation.manager_id = current_user.id
+    reservation.date_of_expire = date.today()
+
+    db.add(reservation)
+    await db.commit()
+    await db.refresh(reservation)
+    return reservation
