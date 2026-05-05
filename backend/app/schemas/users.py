@@ -50,3 +50,8 @@ class UserPhoneAnswer(BaseModel):
     is_active: bool = Field(..., description="Активность пользователя")
     # activeLoans: int = Field(..., description="Активные бронирования")
     # debts: int = Field(..., description="Задолженности")
+
+
+class AddManager(BaseModel):
+    id: UUID | None = Field(..., description="ID пользователя")
+    phone_number: str | None = Field(..., description="Телефон пользователя")

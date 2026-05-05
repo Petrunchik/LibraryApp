@@ -1,7 +1,24 @@
+import { useEffect, useState } from 'react'
+import ManagingManager from '../component/AdminProfile/ManagingManager'
 import { logout } from '../services/logout'
 import '../style/AdminProfileStyle.css'
+import { getUserInfo } from '../services/getUserInfo'
 
 function AdminProfile () {
+  const [userData, setUserData] = useState(null)
+  
+    useEffect(() => {
+          const getUser = async () => {
+            const user = await getUserInfo()
+            if (user.success){
+              setUserData(user.data)
+            } else {
+              toast.error("Ошибка получения данных пользователя!")
+            }
+          }
+          getUser()
+        }, [])
+        
     return (
         <div className="admin-container">
           {/* шапка */}
@@ -12,7 +29,7 @@ function AdminProfile () {
               <span className="logo-tagline">библиотека</span>
             </div>
             <div className="admin-badge">
-              <i className="fas fa-crown"></i> Администратор · Петров А.В.
+              <i className="fas fa-crown"></i> Администратор · {userData?.first_name} {userData?.last_name}
             </div>
             <div className="logout-btn" onClick={() => logout()}><i className="fas fa-sign-out-alt"></i> Выйти</div>
           </div>
@@ -28,48 +45,7 @@ function AdminProfile () {
 
           <div className="dashboard-grid">
             {/* БЛОК 1: УПРАВЛЕНИЕ МЕНЕДЖЕРАМИ */}
-            <div className="card">
-              <div className="card-header">
-                <h2><i className="fas fa-user-tie"></i> Управление менеджерами</h2>
-                <span className="badge">4 активных</span>
-              </div>
-              <div className="admin-search-wrapper" style={{ marginBottom: '24px' }}>
-                <input type="text" placeholder="ID или email нового менеджера" />
-                <button><i className="fas fa-plus-circle"></i> Назначить</button>
-              </div>
-              <div className="manager-list">
-                <div className="manager-item">
-                  <div className="manager-info">
-                    <h4>Иванов А.А.</h4>
-                    <div className="manager-meta">ID: MGR-001 · email: ivanov@library.ru</div>
-                  </div>
-                  <div className="actions">
-                    <span className="btn-sm btn-warning"><i className="fas fa-user-minus"></i> Лишить прав</span>
-                    <span className="btn-sm btn-dark"><i className="fas fa-edit"></i> Редактировать</span>
-                  </div>
-                </div>
-                <div className="manager-item">
-                  <div className="manager-info">
-                    <h4>Смирнова Е.В.</h4>
-                    <div className="manager-meta">ID: MGR-002 · email: smirnova@library.ru</div>
-                  </div>
-                  <div className="actions">
-                    <span className="btn-sm btn-warning"><i className="fas fa-user-minus"></i> Лишить прав</span>
-                    <span className="btn-sm btn-dark"><i className="fas fa-edit"></i> Редактировать</span>
-                  </div>
-                </div>
-                <div className="manager-item">
-                  <div className="manager-info">
-                    <h4>Кузнецов Д.П.</h4>
-                    <div className="manager-meta">ID: MGR-003 · email: kuznetsov@library.ru</div>
-                  </div>
-                  <div className="actions">
-                    <span className="btn-sm btn-warning"><i className="fas fa-user-minus"></i> Лишить прав</span>
-                    <span className="btn-sm btn-dark"><i className="fas fa-edit"></i> Редактировать</span>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <ManagingManager />
 
             {/* БЛОК 2: ПОИСК И БЛОКИРОВКА ПОЛЬЗОВАТЕЛЕЙ */}
             <div className="card">

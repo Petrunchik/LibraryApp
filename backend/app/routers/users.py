@@ -1,14 +1,15 @@
 from uuid import uuid4, UUID
-from fastapi import APIRouter, Depends, status, HTTPException, Response, Request
+from fastapi import APIRouter, Depends, status, HTTPException, Response, Request, Body
 from fastapi.security import OAuth2PasswordRequestForm
-from sqlalchemy import select, func
+from sqlalchemy import select, func, or_
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.database.db_depends import get_async_db
 from app.models import User, Loan, Fines, Reservation, Book, BookCopy, Review
 import jwt
 from settings import SECRET_KEY, ALGORITHM
-from app.schemas.users import UserAnswer, UserCreate, UserPhone, UserPhoneAnswer, UserDefaultAnswer
-from app.auth.auth import hash_password, verify_password, create_access_token, create_refresh_token, get_current_manager, get_current_loggined, get_current_reader
+from app.schemas.users import UserAnswer, UserCreate, UserPhone, UserPhoneAnswer, UserDefaultAnswer, AddManager
+from app.auth.auth import hash_password, verify_password, create_access_token, create_refresh_token, get_current_manager, get_current_loggined, get_current_reader, get_current_admin
+from datetime import datetime
 
 router = APIRouter(
     prefix="/users",
@@ -128,6 +129,57 @@ async def get_history_reading(
             "rating": rating
         })
     return result
+
+
+@router.get("/manager/list", response_model=list[UserDefaultAnswer])
+async def get_managers_list(
+    db: AsyncSession = Depends(get_async_db),
+    current_user: User = Depends(get_current_admin)
+    ):
+    """
+    Возвращает список менеджеров.
+    """
+    managers_stmt = await db.scalars(select(User).where(
+        User.is_active == True,
+        User.role == "manager"
+    ))
+    managers = managers_stmt.all()
+    return managers
+
+
+@router.post("/manager/add", response_model=UserDefaultAnswer, status_code=status.HTTP_200_OK)
+async def add_manager(
+    data: AddManager,
+    db: AsyncSession = Depends(get_async_db),
+    current_user: User = Depends(get_current_admin)
+):
+    """
+    Добавляет менеджера по ID или номеру телефона.
+    Доступно только администратору.
+    """
+    if (data.phone_number is None) and (data.id is None):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Одно из полей обязательно к заполнению!")
+    
+    user = await db.scalar(select(User).where(
+        or_(
+            User.phone_number == data.phone_number if data.phone_number else False,
+            User.id == data.id if data.id else False
+        ),
+        User.role != "admin",
+        User.is_active == True,
+    ))
+
+    if user is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Пользователь не найден")
+    if user.role == "manager":
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Пользователь уже является менеджером")
+    
+    user.role = "manager"
+    user.date_of_update = datetime.now()
+    db.add(user)
+    await db.commit()
+    await db.refresh(user)
+    return user
 
 
 @router.post("/", response_model=UserAnswer, status_code=status.HTTP_201_CREATED)
@@ -253,3 +305,28 @@ async def refresh_token(
         "token_type": "bearer",
     }
 
+
+@router.patch("/manager/demote", status_code=status.HTTP_204_NO_CONTENT)
+async def demote_manager(
+    phone: UserPhone,
+    db: AsyncSession = Depends(get_async_db),
+    current_user: User = Depends(get_current_admin)
+):
+    """
+    Удаляет менеджера, присваивает роль читателя.
+    Доступно только администратору. 
+    """
+    user = await db.scalar(select(User).where(
+        User.phone_number == phone.phone,
+        User.is_active == True,
+        User.role == "manager",
+    ))
+
+    if user is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Пользователь не найден.")
+    
+    user.role = "reader"
+    user.date_of_update = datetime.now()
+    db.add(user)
+    await db.commit()
+    return 
