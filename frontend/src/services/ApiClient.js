@@ -1,3 +1,4 @@
+import { toast } from "../hooks/useToast"
 import { updateAccessToken } from "./updateAccessToken"
 
 class ApiClient {
@@ -68,6 +69,10 @@ class ApiClient {
                         status: 401,
                         errorStatus: 401
                     }
+                } else if (response.status === 500) {
+                    toast.error("Сервер недоступен, повторите попытку позже!")
+                } else if (response.status === 429) {
+                    toast.error("Слишком много попыток, попробуйте позже!")
                 }
                 
                 return { 
@@ -95,6 +100,10 @@ class ApiClient {
 
     async put(url, body, options = {}) {
         return this.#request(url, { ...options, method: 'PUT', body })
+    }
+
+    async patch(url, body, options = {}) {
+        return this.#request(url, { ...options, method: 'PATCH', body })
     }
 
     async delete(url, options = {}) {
