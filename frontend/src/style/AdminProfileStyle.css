@@ -397,3 +397,81 @@ body {
   .stats-row { flex-direction: column; }
   .card { padding: 20px; }
 }
+
+/* ======== КОМПОНЕНТ BLOCKING USER INFO ======== */
+.blocking-user-card {
+  background: #fefcf9;
+  border-radius: 24px;
+  border: 1px solid #e0d6cd;
+  padding: 20px;
+  margin-top: 20px;
+}
+
+.blocking-user-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.blocking-user-name {
+  font-size: 18px;
+  font-weight: 600;
+  color: #3a2e28;
+  margin: 0;
+}
+
+.blocking-user-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.blocking-user-row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.blocking-user-stats {
+  display: flex;
+  gap: 20px;
+  padding-top: 12px;
+  border-top: 1px solid #ede5dd;
+}
+
+.blocking-user-stat-item {
+  text-align: center;
+}
+
+.blocking-user-stat-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: #6b4e3a;
+}
+
+.blocking-user-stat-value.debt-positive {
+  color: #bb5b2c;
+}
+
+.blocking-user-stat-value.debt-zero {
+  color: #2d6a4f;
+}
+
+.blocking-user-stat-label {
+  font-size: 12px;
+  color: #8f7f71;
+}
+
+.blocking-user-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+  justify-content: flex-end;
+}
+
+.blocking-user-actions .btn-sm {
+  cursor: pointer;
+  padding: 8px 20px;
+  border-radius: 60px;
+}

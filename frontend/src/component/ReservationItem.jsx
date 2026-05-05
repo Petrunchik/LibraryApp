@@ -7,7 +7,7 @@ function ReservationItem ({ title, readerId, bookId, date, status, firstName, la
 
     const moderate = async (status) => {
         if (!(["rejected", "accepted"].includes(status))){
-            console.log("Неверный статус")
+            toast.error("Неверный статус")
         }
         const data = {
             "reader_id": readerId,
@@ -15,7 +15,6 @@ function ReservationItem ({ title, readerId, bookId, date, status, firstName, la
             "status": status
         }
         const response = await reservationModerate(data)
-        console.log(response.success)
         if (response.success === true) {
             toast.success("Успешно!")
             setReload()

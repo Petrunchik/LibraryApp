@@ -37,11 +37,10 @@ function ReadingProfileHistory() {
                         initialRatings[book.book_id] = book.rating
                     }
                 })
-                console.log(history.data)
                 setSavedRatings(initialRatings)
                 setLoading(false)
             } else {
-                console.log("Ошибка получения данных")
+                toast.error("Ошибка получения данных")
             }
         }
         getUserHistory()

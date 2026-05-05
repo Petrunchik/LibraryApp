@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { getUserPossesion } from "../services/getUserPossesion"
 import MyPossessionDetailInfo from "./MyPossessionDetailInfo"
 import { formatDateShort } from "../services/formatDate"
+import { toast } from "../hooks/useToast"
 
 function MyPossession () {
 
@@ -22,7 +23,7 @@ function MyPossession () {
             setUserPosession(user.data)
             setLoading(false)
           } else {
-            console.log("Ошибка получения данных")
+            toast.error("Ошибка получения данных")
           }
         }
         getUserPossesionInfo()

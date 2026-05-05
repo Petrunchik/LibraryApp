@@ -115,7 +115,7 @@ async def get_current_manager(current_user: User = Depends(get_current_user)):
     """
     Проверяет что пользователь имеет роль менеджера
     """
-    if current_user.role != "manager":
+    if current_user.role not in ["manager", "admin"]:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Только менеджер может выполнить это действие")
     return current_user
 

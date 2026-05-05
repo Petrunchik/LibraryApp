@@ -22,7 +22,6 @@ export const getPath = () => {
       
       return paths[role] || '/auth';
     } catch (error) {
-      console.error('Ошибка декодирования токена:', error);
       return '/auth';
     }
   }

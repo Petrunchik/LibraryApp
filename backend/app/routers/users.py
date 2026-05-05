@@ -7,7 +7,7 @@ from app.database.db_depends import get_async_db
 from app.models import User, Loan, Fines, Reservation, Book, BookCopy, Review
 import jwt
 from settings import SECRET_KEY, ALGORITHM
-from app.schemas.users import UserAnswer, UserCreate, UserPhone, UserPhoneAnswer, UserDefaultAnswer, AddManager
+from app.schemas.users import UserAnswer, UserCreate, UserPhone, UserPhoneAnswer, UserDefaultAnswer, UserReference
 from app.auth.auth import hash_password, verify_password, create_access_token, create_refresh_token, get_current_manager, get_current_loggined, get_current_reader, get_current_admin
 from datetime import datetime
 
@@ -47,24 +47,33 @@ async def get_user_by_phone(
     phone: str,
     db: AsyncSession = Depends(get_async_db),
     current_user: User = Depends(get_current_manager)):
-    user = await db.scalar(
-        select(User)
-        .where(
-            User.phone_number == phone
+    user_stmt = await db.execute(
+        select(
+            User,
+            func.count(Loan.id).label("active_loans"),
         )
+        .outerjoin(Loan, Loan.user_id == User.id)
+        .where(
+            User.phone_number == phone,
+            Loan.date_of_return == None,
+        )
+        .group_by(User.id)
     )
-    if user is None:
+    rows = user_stmt.all()
+    if rows is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Пользователь не найден")
-    user_data = UserPhoneAnswer(
-        id=user.id,
-        role=user.role,
-        first_name=user.first_name,   
-        last_name=user.last_name,       
-        phone_number=user.phone_number,
-        date_of_create=user.date_of_create,
-        date_of_update=user.date_of_update,
-        is_active=user.is_active
-    )
+    for user, active_loans in rows:
+        user_data = UserPhoneAnswer(
+            id=user.id,
+            role=user.role,
+            first_name=user.first_name,   
+            last_name=user.last_name,       
+            phone_number=user.phone_number,
+            date_of_create=user.date_of_create,
+            date_of_update=user.date_of_update,
+            is_active=user.is_active,
+            active_loans=active_loans,
+        )
     return user_data
 
 # статусы бронирований: 
@@ -149,7 +158,7 @@ async def get_managers_list(
 
 @router.post("/manager/add", response_model=UserDefaultAnswer, status_code=status.HTTP_200_OK)
 async def add_manager(
-    data: AddManager,
+    data: UserReference,
     db: AsyncSession = Depends(get_async_db),
     current_user: User = Depends(get_current_admin)
 ):
@@ -330,3 +339,28 @@ async def demote_manager(
     db.add(user)
     await db.commit()
     return 
+
+
+
+@router.patch("/{phone}/status", status_code=status.HTTP_204_NO_CONTENT)
+async def toggle_status(
+    phone: str,
+    db: AsyncSession = Depends(get_async_db),
+    current_user: User = Depends(get_current_admin)
+):
+    """
+    Блокирует/разблокирует пользователя. 
+    Доступно только администратору.
+    """
+    user = await db.scalar(select(User).where(
+        User.phone_number == phone,
+    ))
+    if user is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Пользователь не найден")
+    if user.id == current_user.id:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Нельзя заблокировать пользователя текущей сессии")
+    user.is_active = not (user.is_active)
+    user.date_of_update = datetime.now()
+    db.add(user)
+    await db.commit()
+    return

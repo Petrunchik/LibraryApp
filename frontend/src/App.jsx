@@ -11,7 +11,7 @@ import { usePageTracking } from './services/usePageTracking'
 import { UserDataContext } from './context/UserDataContext'
 import { useEffect, useRef, useState } from 'react'
 import { getUserInfo } from './services/getUserInfo'
-import { registerToast } from "./hooks/useToast"
+import { registerToast, toast } from "./hooks/useToast"
 import ToastContainer from './component/ToastContainer'
 
 function App() {
@@ -23,9 +23,8 @@ function App() {
         const user = await getUserInfo()
         if (user.success){
           setUserData(user.data)
-          console.log("App: данные получены")
         } else {
-          console.log("App: Ошибка получения данных")
+          toast.error("Ошибка получения данных")
         }
       }
       getUser()

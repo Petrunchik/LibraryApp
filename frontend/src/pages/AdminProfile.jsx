@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import ManagingManager from '../component/AdminProfile/ManagingManager'
+import BlockingUser from '../component/AdminProfile/BlockingUser'
 import { logout } from '../services/logout'
 import '../style/AdminProfileStyle.css'
 import { getUserInfo } from '../services/getUserInfo'
@@ -18,7 +19,7 @@ function AdminProfile () {
           }
           getUser()
         }, [])
-        
+
     return (
         <div className="admin-container">
           {/* шапка */}
@@ -48,42 +49,7 @@ function AdminProfile () {
             <ManagingManager />
 
             {/* БЛОК 2: ПОИСК И БЛОКИРОВКА ПОЛЬЗОВАТЕЛЕЙ */}
-            <div className="card">
-              <div className="card-header">
-                <h2><i className="fas fa-user-lock"></i> Блокировка / разблокировка</h2>
-                <span className="badge">поиск по ID</span>
-              </div>
-              <div className="admin-search-wrapper">
-                <input type="text" placeholder="Введите ID читателя (например, LIB-4281)" />
-                <button><i className="fas fa-search"></i> Найти</button>
-              </div>
-              <div className="profile-preview">
-                <div className="profile-row">
-                  <span><strong>Александра Громова</strong> · ID: LIB-4281</span>
-                  <span style={{ background: '#e1f0e4', padding: '4px 12px', borderRadius: '30px' }}>Активен</span>
-                </div>
-                <div className="profile-row">
-                  <span><i className="fas fa-envelope"></i> a.gromova@books.ru</span>
-                  <span><i className="fas fa-phone"></i> +7 (916) 342-88-21</span>
-                </div>
-                <div className="profile-row">
-                  <span><i className="fas fa-book"></i> Книг на руках: 2</span>
-                  <span><i className="fas fa-exclamation-triangle"></i> Штраф: 200 ₽</span>
-                </div>
-                <div className="actions" style={{ marginTop: '20px', justifyContent: 'flex-end' }}>
-                  <span className="btn-sm btn-danger"><i className="fas fa-ban"></i> Заблокировать</span>
-                  <span className="btn-sm btn-success"><i className="fas fa-check-circle"></i> Разблокировать</span>
-                  <span className="btn-sm btn-warning"><i className="fas fa-history"></i> История</span>
-                </div>
-              </div>
-              <div style={{ marginTop: '20px' }}>
-                <div className="profile-preview" style={{ background: '#fff6f0' }}>
-                  <div className="profile-row"><span><strong>Заблокированные пользователи</strong></span></div>
-                  <div className="profile-row"><span>ID: LIB-2290 · Сергей Павлов (задолженность 45 дн)</span><span className="btn-sm btn-success">Разблокировать</span></div>
-                  <div className="profile-row"><span>ID: LIB-5512 · Ольга Медведева (нарушение)</span><span className="btn-sm btn-success">Разблокировать</span></div>
-                </div>
-              </div>
-            </div>
+            <BlockingUser />
 
             {/* БЛОК 3: ДОБАВЛЕНИЕ КНИГИ (издание) + ФИЗИЧЕСКАЯ КОПИЯ */}
             <div className="card full-width">

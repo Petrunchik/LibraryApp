@@ -2,6 +2,7 @@ import ReservationProfileDetail from "./ReservationProfileDetail"
 import { getReservationInfo } from '../services/getReservationInfo'
 import { useEffect, useState } from "react"
 import { formatDateShort } from "../services/formatDate"
+import { toast } from "../hooks/useToast"
 
 function ReservationProfile () {
     const [loading, setLoading] = useState(false)
@@ -24,7 +25,7 @@ function ReservationProfile () {
                 setLoading(false)
                 
               } else {
-                console.log("Ошибка получения данных")
+                toast.error("Ошибка получения данных")
               }
             }
             getReservation()

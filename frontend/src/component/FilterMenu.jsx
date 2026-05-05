@@ -20,7 +20,6 @@ function FilterMenu() {
   ]
   const [selectedSorting, setSelectedSorting] = useState({title: "Все книги", icon: "fas fa-check-circle"})
   const pickSorting = (option) => {
-        console.log(option)
         setSelectedSorting(option)
         setFilterQuery(option.action)
   }

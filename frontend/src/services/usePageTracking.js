@@ -19,8 +19,6 @@ export const usePageTracking = () => {
 
             if (response.success) {
                 role = response.data.role
-            } else {
-                console.log("Ошибка получения роли")
             }
         
             // Обновление title

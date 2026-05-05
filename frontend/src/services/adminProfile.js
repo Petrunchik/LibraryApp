@@ -9,6 +9,9 @@ export const addManager = (data) => {
 }
 
 export const demoteManager = (data) => {
-    console.log(data)
     return apiClient.patch("/users/manager/demote", data)
+}
+
+export const toggleStatus = (phone) => {
+    return apiClient.patch(`/users/${phone}/status`)
 }

@@ -16,8 +16,6 @@ function MainPage () {
     const [sortQuery, setSortQuery] = useState('')
     const [filterQuery, setFilterQuery] = useState('')
 
-    const [numberOfBooks, setNumberOfBooks] = useState('')
-
     const filteredBooks = useMemo(() => {
         let result = [...bookList]
 
@@ -83,7 +81,7 @@ function MainPage () {
                 
                 <BooksToolbar numberOfBooks={lengthOfBooks}/>
 
-                <BookList setNumberOfBooks={setNumberOfBooks}/>
+                <BookList />
 
                 <Footer/>
             </div>

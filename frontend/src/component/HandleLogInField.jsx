@@ -5,6 +5,7 @@ import { RedirectToHome } from '../services/redirectToHome'
 import { getPath } from '../services/getPath'
 import Link from '../Link'
 import { navigateTo } from '../services/navigateTo'
+import { toast } from '../hooks/useToast'
 
 function HandleLogInField () {
     const [isShowPassword, setIsShowPassword] = useState(false)
@@ -64,18 +65,16 @@ function HandleLogInField () {
           navigateTo(redirectPath)
           clearAllField()
         } else {
-          console.log(result.error)
+          toast.error(result.error)
         }
       }
     }
 
     return (
-        // ================= ФОРМА ВХОДА =================
         <div className="auth-form login-form">
           <h2>Вход в аккаунт</h2>
           <p className="auth-subtitle">Введите номер телефона и пароль</p>
 
-          {/* Поле: Номер телефона */}
           <div className="field-wrapper" id="login-phone-wrapper">
             <div className={`input-group ${isPhoneError === "flex" ? "error" : "none"}`} id="login-phone-input">
               <i className="fas fa-phone-alt"></i>
@@ -95,7 +94,6 @@ function HandleLogInField () {
             </div>
           </div>
 
-          {/* Поле: Пароль */}
           <div className="field-wrapper" id="login-password-wrapper">
             <div className={`input-group password-group ${isPasswordError === "flex" ? "error" : "none"}`} id="login-password-input">
               <i className="fas fa-lock"></i>
@@ -147,7 +145,7 @@ function HandleLogInField () {
             </a>
           </div>
 
-          <button className="auth-btn" onClick={checkData}>Войти</button>
+          <button className="auth-btn" onClick={() => checkData()}>Войти</button>
 
           <div className="auth-switch">
             <span>Нет аккаунта?</span>

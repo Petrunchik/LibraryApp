@@ -48,10 +48,10 @@ class UserPhoneAnswer(BaseModel):
     date_of_create: datetime = Field(..., description="Дата создания")
     date_of_update: datetime = Field(..., description="Дата обновления")
     is_active: bool = Field(..., description="Активность пользователя")
-    # activeLoans: int = Field(..., description="Активные бронирования")
+    active_loans: int = Field(..., description="Активные бронирования")
     # debts: int = Field(..., description="Задолженности")
 
 
-class AddManager(BaseModel):
+class UserReference(BaseModel):
     id: UUID | None = Field(..., description="ID пользователя")
     phone_number: str | None = Field(..., description="Телефон пользователя")
