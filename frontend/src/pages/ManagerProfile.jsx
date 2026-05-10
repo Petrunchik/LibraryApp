@@ -53,10 +53,10 @@ function ManagerProfile () {
             <LoanBook />
 
             {/* 4. ОТПРАВКА УВЕДОМЛЕНИЙ */}
-            <NotificationManager />
+            {/* <NotificationManager /> */}
 
             {/* 5. ЧИТАТЕЛИ С ЗАДОЛЖЕННОСТЯМИ */}
-            <FineManager />
+            {/* <FineManager /> */}
           </div>
 
           <div style={{ marginTop: '28px', textAlign: 'center', color: '#a39283', fontSize: '14px', borderTop: '1px dashed #ddd2c8', paddingTop: '28px' }}>

@@ -19,3 +19,7 @@ export const toggleStatus = (phone) => {
 export const addNewBook = (data) => {
     return apiClient.post("/books", data)
 }
+
+export const getBookInfo = (bookId) => {
+    return apiClient.get(`/books/${bookId}/info`)
+}

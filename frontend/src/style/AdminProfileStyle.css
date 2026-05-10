@@ -501,3 +501,60 @@ body {
   margin-bottom: 18px;
   font-size: 16px;
 }
+
+.search-book .search-title {
+    font-weight: 600;
+    margin-bottom: 16px;
+}
+
+.search-book .search-input-wrapper {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.search-book .search-input {
+    flex: 1;
+    padding: 12px 16px;
+    border-radius: 60px;
+    border: 1px solid #e7dfd7;
+}
+
+.search-book .search-button {
+    cursor: pointer;
+    padding: 8px 20px;
+}
+
+.search-book .book-result-card {
+    background: #fefcf9;
+    border-radius: 24px;
+    border: 1px solid #e0d6cd;
+    padding: 20px;
+}
+
+.search-book .book-result-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.search-book .book-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #3a2e28;
+    margin: 0;
+}
+
+.search-book .book-status-badges {
+    display: flex;
+    gap: 8px;
+}
+
+.search-book .book-details {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}

@@ -1,4 +1,6 @@
 import { useState } from "react"
+import { getBookInfo } from "../services/adminProfile"
+import { toast } from "../hooks/useToast"
 
 function SearchBook({ setMessage }) {
     // Состояния для поиска книги
@@ -12,106 +14,94 @@ function SearchBook({ setMessage }) {
             return
         }
         setBookLoading(true)
-        setTimeout(() => {
-            if (bookQuery.toLowerCase().includes("война") || bookQuery.toLowerCase().includes("мир")) {
-                setBookResult({
-                    title: "Война и мир",
-                    author: "Лев Толстой",
-                    year: 1869,
-                    isActive: true,
-                    status: "available"
-                })
-                setMessage({ type: 'success', text: 'Книга найдена' })
-            } else if (bookQuery.toLowerCase().includes("преступление")) {
-                setBookResult({
-                    title: "Преступление и наказание",
-                    author: "Фёдор Достоевский",
-                    year: 1866,
-                    isActive: true,
-                    status: "loaned"
-                })
-                setMessage({ type: 'success', text: 'Книга найдена' })
-            } else {
-                setBookResult(null)
-                setMessage({ type: 'error', text: 'Книга не найдена' })
-            }
+        const response = await getBookInfo(bookQuery)
+        if (response.success){
+            setBookResult(response.data)
+            toast.success("Книга найдена!")
             setBookLoading(false)
-        }, 500)
-    }
-
-    const getBookStatusConfig = (status) => {
-        switch (status) {
-            case 'available':
-                return { class: 'status-ready', icon: 'fa-check', text: 'В наличии' }
-            case 'loaned':
-                return { class: 'status-waiting', icon: 'fa-book', text: 'Выдана' }
-            case 'written_off':
-                return { class: 'status-critical', icon: 'fa-trash', text: 'Списана' }
-            default:
-                return { class: 'status-ready', icon: 'fa-check', text: 'В наличии' }
+        } else {
+            toast.error("Книга не найдена!")
+            setBookLoading(false)
         }
     }
 
+    // const getBookStatusConfig = (status) => {
+    //     switch (status) {
+    //         case 'available':
+    //             return { class: 'status-ready', icon: 'fa-check', text: 'В наличии' }
+    //         case 'loaned':
+    //             return { class: 'status-waiting', icon: 'fa-book', text: 'Выдана' }
+    //         case 'written_off':
+    //             return { class: 'status-critical', icon: 'fa-trash', text: 'Списана' }
+    //         default:
+    //             return { class: 'status-ready', icon: 'fa-check', text: 'В наличии' }
+    //     }
+    // }
+
     return (
-        <div>
-            <div style={{ fontWeight: 600, marginBottom: '16px' }}>
+        <div className="search-book">
+            <div className="search-title">
                 <i className="fas fa-book"></i> Поиск книги
             </div>
-            <div style={{ display: 'flex', gap: '8px', marginBottom: '20px' }}>
+            <div className="search-input-wrapper">
                 <input
                     type="text"
-                    placeholder="ID книги"
-                    className="input-field"
-                    style={{ flex: 1, padding: '12px 16px', borderRadius: '60px', border: '1px solid #e7dfd7' }}
+                    placeholder="ID книги или название"
+                    className="input-field search-input"
                     value={bookQuery}
                     onChange={(e) => setBookQuery(e.target.value)}
                     onKeyPress={(e) => e.key === 'Enter' && searchBook()}
                 />
                 <span
-                    className="btn-sm btn-success"
+                    className="btn-sm btn-success search-button"
                     onClick={searchBook}
-                    style={{ cursor: 'pointer', padding: '8px 20px' }}
                 >
                     {bookLoading ? <i className="fas fa-spinner fa-pulse"></i> : <i className="fas fa-search"></i>} Найти
                 </span>
             </div>
 
             {bookResult && (
-                <div style={{
-                    background: '#fefcf9',
-                    borderRadius: '24px',
-                    border: '1px solid #e0d6cd',
-                    padding: '20px'
-                }}>
-                    <div style={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        marginBottom: '16px',
-                        flexWrap: 'wrap',
-                        gap: '8px'
-                    }}>
-                        <h3 style={{ fontSize: '18px', fontWeight: 600, color: '#3a2e28' }}>
+                <div className="book-result-card">
+                    <div className="book-result-header">
+                        <h3 className="book-title">
                             <i className="fas fa-book-open"></i> {bookResult.title}
                         </h3>
-                        <div style={{ display: 'flex', gap: '8px' }}>
-                            <span className={`status-badge ${bookResult.isActive ? 'status-ready' : 'status-critical'}`}>
-                                <i className={`fas ${bookResult.isActive ? 'fa-check-circle' : 'fa-ban'}`}></i>
-                                {bookResult.isActive ? ' Активна' : ' Неактивна'}
+                        <div className="book-status-badges">
+                            <span className={`status-badge ${bookResult.is_active ? 'status-ready' : 'status-critical'}`}>
+                                <i className={`fas ${bookResult.is_active ? 'fa-check-circle' : 'fa-ban'}`}></i>
+                                {bookResult.is_active ? ' Активна' : ' Неактивна'}
                             </span>
-                            <span className={`status-badge ${getBookStatusConfig(bookResult.status).class}`}>
+                            {/* <span className={`status-badge ${getBookStatusConfig(bookResult.status).class}`}>
                                 <i className={`fas ${getBookStatusConfig(bookResult.status).icon}`}></i>
                                 {getBookStatusConfig(bookResult.status).text}
-                            </span>
+                            </span> */}
                         </div>
                     </div>
 
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                        <div>
+                    <div className="book-details">
+                        <div className="book-detail-item">
                             <i className="fas fa-user-edit"></i> <strong>Автор:</strong> {bookResult.author}
                         </div>
-                        <div>
-                            <i className="fas fa-calendar-alt"></i> <strong>Год выпуска:</strong> {bookResult.year}
+                        <div className="book-detail-item">
+                            <i className="fas fa-calendar-alt"></i> <strong>Год выпуска:</strong> {bookResult.year_of_release}
+                        </div>
+                        <div className="book-detail-item">
+                            <i className="fas fa-building"></i> <strong>Издательство:</strong> {bookResult.publisher}
+                        </div>
+                        <div className="book-detail-item">
+                            <i className="fas fa-tag"></i> <strong>Жанр:</strong> {bookResult.genre}
+                        </div>
+                        <div className="book-detail-item">
+                            <i className="fas fa-copy"></i> <strong>Количество копий:</strong> {bookResult.total}
+                        </div>
+                        <div className="book-detail-item">
+                            <i className="fas fa-book-reader"></i> <strong>Выдано книг:</strong> {bookResult.borrowed_copies}
+                        </div>
+                        <div className="book-detail-item">
+                            <i className="fas fa-star"></i> <strong>Рейтинг:</strong> {bookResult.rating}
+                        </div>
+                        <div className="book-detail-item">
+                            <i className="fas fa-chart-line"></i> <strong>Количество оценок:</strong> {bookResult.total_rating_count}
                         </div>
                     </div>
                 </div>

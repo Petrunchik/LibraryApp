@@ -57,6 +57,48 @@ async def get_all_books(db: AsyncSession = Depends(get_async_db)):
     return response_books
 
 
+@router.get("/{book_id}/info")
+async def get_book_info(book_id: UUID, db: AsyncSession = Depends(get_async_db)):
+    """
+    Функция для получения информации о конкретной книге по ее ID.
+    """
+    result = await db.execute(
+        select(
+            Book,
+            func.count(BookCopy.id).label("total"),
+            func.sum(case((BookCopy.status == "доступна", 1), else_=0)).label("available_copies"),
+            func.coalesce(func.avg(Review.grade), 0).label("rating"),
+            func.count(func.distinct(Review.id)).label("total_rating_count"),
+        )
+        .join(BookCopy, BookCopy.book_id == Book.id, isouter=True)
+        .join(Review, Review.book_id == Book.id, isouter=True)
+        .where(Book.is_active == True, Book.id == book_id)
+        .group_by(Book.id)
+    )
+    books = result.first()
+    
+    book, total, available_copies, rating, total_rating_count = books
+
+    book_dict = {
+        "id": book.id,
+        "title": book.title,
+        "description": book.description,
+        "pages": book.pages,
+        "author": book.author,
+        "year_of_release": book.year_of_release,
+        "image_url": book.image_url,
+        "is_active": book.is_active,
+        "publisher": book.publisher,
+        "genre": book.genre,
+        "total": total if total else 0,
+        "borrowed_copies": total - available_copies,
+        "available_copies": available_copies,
+        "rating": float(rating) if rating else 0,
+        "total_rating_count": total_rating_count,
+    }
+    return book_dict
+
+
 @router.post("/", response_model=DefaultBookAnswer)
 async def add_book(
     new_book: BookCreate,
