@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { getBookInfo } from "../services/adminProfile"
 import { toast } from "../hooks/useToast"
+import SearchBookDetail from "./SearchBookDetail"
 
 function SearchBook({ setMessage }) {
     // Состояния для поиска книги
@@ -61,50 +62,7 @@ function SearchBook({ setMessage }) {
             </div>
 
             {bookResult && (
-                <div className="book-result-card">
-                    <div className="book-result-header">
-                        <h3 className="book-title">
-                            <i className="fas fa-book-open"></i> {bookResult.title}
-                        </h3>
-                        <div className="book-status-badges">
-                            <span className={`status-badge ${bookResult.is_active ? 'status-ready' : 'status-critical'}`}>
-                                <i className={`fas ${bookResult.is_active ? 'fa-check-circle' : 'fa-ban'}`}></i>
-                                {bookResult.is_active ? ' Активна' : ' Неактивна'}
-                            </span>
-                            {/* <span className={`status-badge ${getBookStatusConfig(bookResult.status).class}`}>
-                                <i className={`fas ${getBookStatusConfig(bookResult.status).icon}`}></i>
-                                {getBookStatusConfig(bookResult.status).text}
-                            </span> */}
-                        </div>
-                    </div>
-
-                    <div className="book-details">
-                        <div className="book-detail-item">
-                            <i className="fas fa-user-edit"></i> <strong>Автор:</strong> {bookResult.author}
-                        </div>
-                        <div className="book-detail-item">
-                            <i className="fas fa-calendar-alt"></i> <strong>Год выпуска:</strong> {bookResult.year_of_release}
-                        </div>
-                        <div className="book-detail-item">
-                            <i className="fas fa-building"></i> <strong>Издательство:</strong> {bookResult.publisher}
-                        </div>
-                        <div className="book-detail-item">
-                            <i className="fas fa-tag"></i> <strong>Жанр:</strong> {bookResult.genre}
-                        </div>
-                        <div className="book-detail-item">
-                            <i className="fas fa-copy"></i> <strong>Количество копий:</strong> {bookResult.total}
-                        </div>
-                        <div className="book-detail-item">
-                            <i className="fas fa-book-reader"></i> <strong>Выдано книг:</strong> {bookResult.borrowed_copies}
-                        </div>
-                        <div className="book-detail-item">
-                            <i className="fas fa-star"></i> <strong>Рейтинг:</strong> {bookResult.rating}
-                        </div>
-                        <div className="book-detail-item">
-                            <i className="fas fa-chart-line"></i> <strong>Количество оценок:</strong> {bookResult.total_rating_count}
-                        </div>
-                    </div>
-                </div>
+                <SearchBookDetail bookData={bookResult}/>
             )}
         </div>
     )
