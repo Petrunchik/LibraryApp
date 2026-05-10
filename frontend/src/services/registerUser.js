@@ -1,3 +1,5 @@
+import { toast } from "../hooks/useToast"
+
 export const registerUser = async (userData) => {
     const API_BASE_URL = import.meta.env.API_BASE_URL || 'http://localhost:8000'
 

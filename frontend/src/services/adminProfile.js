@@ -15,3 +15,7 @@ export const demoteManager = (data) => {
 export const toggleStatus = (phone) => {
     return apiClient.patch(`/users/${phone}/status`)
 }
+
+export const addNewBook = (data) => {
+    return apiClient.post("/books", data)
+}

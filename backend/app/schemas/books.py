@@ -5,7 +5,8 @@ from typing import Annotated
 from fastapi import Form
 from uuid import UUID
 
-class BookAnswer(BaseModel):
+
+class DefaultBookAnswer(BaseModel):
     id: UUID = Field(..., description="ID книги")
     title: str = Field(..., min_length=1, max_length=60, description="Название книги")
     description: str = Field(..., description="Описание книги")
@@ -16,6 +17,9 @@ class BookAnswer(BaseModel):
     is_active: bool = Field(..., description="Активность товара")
     publisher: str | None = Field(None, description="Издательство книги")
     genre: str | None = Field(None, description="Жанр книги")
+
+
+class BookAnswer(DefaultBookAnswer):
     total: int
 
 

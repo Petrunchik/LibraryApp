@@ -4,10 +4,10 @@ from sqlalchemy import delete, func, select, case
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.database.db_depends import get_async_db
 from app.models import Book, BookCopy, Review, User
-from app.auth.auth import get_current_reader
+from app.auth.auth import get_current_reader, get_current_admin
 from app.schemas.review import ReviewCreate
 
-from app.schemas.books import BookAnswer, BookCreate
+from app.schemas.books import BookAnswer, BookCreate, DefaultBookAnswer
 
 router = APIRouter(
     prefix="/books",
@@ -27,7 +27,7 @@ async def get_all_books(db: AsyncSession = Depends(get_async_db)):
             func.coalesce(func.avg(Review.grade), 0).label("rating"),
             func.count(func.distinct(Review.id)).label("total_rating_count"),
         )
-        .join(BookCopy, BookCopy.book_id == Book.id)
+        .join(BookCopy, BookCopy.book_id == Book.id, isouter=True)
         .join(Review, Review.book_id == Book.id, isouter=True)
         .where(Book.is_active == True)
         .group_by(Book.id)
@@ -46,7 +46,7 @@ async def get_all_books(db: AsyncSession = Depends(get_async_db)):
             "is_active": book.is_active,
             "publisher": book.publisher,
             "genre": book.genre,
-            "total": total,
+            "total": total if total else 0,
             "borrowed_copies": total - available_copies,
             "available_copies": available_copies,
             "rating": float(review) if review else 0,
@@ -57,10 +57,11 @@ async def get_all_books(db: AsyncSession = Depends(get_async_db)):
     return response_books
 
 
-@router.post("/", response_model=BookAnswer)
+@router.post("/", response_model=DefaultBookAnswer)
 async def add_book(
     new_book: BookCreate,
-    db: AsyncSession = Depends(get_async_db)
+    db: AsyncSession = Depends(get_async_db),
+    current_user: User = Depends(get_current_admin)
     ):
     id = uuid4()
     book = Book(

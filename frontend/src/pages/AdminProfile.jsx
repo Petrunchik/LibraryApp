@@ -4,6 +4,8 @@ import BlockingUser from '../component/AdminProfile/BlockingUser'
 import { logout } from '../services/logout'
 import '../style/AdminProfileStyle.css'
 import { getUserInfo } from '../services/getUserInfo'
+import BookFundManagement from '../component/AdminProfile/BookFundManagement'
+import { RedirectToHome } from '../services/redirectToHome'
 
 function AdminProfile () {
   const [userData, setUserData] = useState(null)
@@ -24,7 +26,7 @@ function AdminProfile () {
         <div className="admin-container">
           {/* шапка */}
           <div className="header">
-            <div className="logo-area">
+            <div className="logo-area" style={{cursor: "pointer"}} onClick={() => RedirectToHome()}>
               <i className="fas fa-book-open logo-icon"></i>
               <span className="logo-text">Книжный червь</span>
               <span className="logo-tagline">библиотека</span>
@@ -52,51 +54,7 @@ function AdminProfile () {
             <BlockingUser />
 
             {/* БЛОК 3: ДОБАВЛЕНИЕ КНИГИ (издание) + ФИЗИЧЕСКАЯ КОПИЯ */}
-            <div className="card full-width">
-              <div className="card-header">
-                <h2><i className="fas fa-layer-group"></i> Управление фондом книг</h2>
-                <span className="badge">полный доступ</span>
-              </div>
-              <div className="grid-2col">
-                <div>
-                  <div style={{ fontWeight: 600, marginBottom: '18px', fontSize: '16px' }}><i className="fas fa-plus-circle"></i> Добавить книгу (издание)</div>
-                  <div className="book-form">
-                    <input type="text" placeholder="Название книги" />
-                    <textarea rows="2" placeholder="Описание"></textarea>
-                    <input type="text" placeholder="Количество страниц" />
-                    <input type="text" placeholder="Автор (Фамилия Имя)" />
-                    <input type="text" placeholder="Год выпуска" />
-                    <input type="text" placeholder="Издательство" />
-                    <input type="text" placeholder="Жанр" />
-                    <div style={{ display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap' }}>
-                      <span className="btn-sm btn-dark"><i className="fas fa-upload"></i> Загрузить обложку</span>
-                      <span style={{ fontSize: '12px', color: '#8f7f71' }}>PNG, JPG до 2MB</span>
-                    </div>
-                    <span className="btn-sm btn-primary" style={{ alignSelf: 'flex-start' }}><i className="fas fa-save"></i> Добавить издание</span>
-                  </div>
-                </div>
-                <div>
-                  <div style={{ fontWeight: 600, marginBottom: '18px', fontSize: '16px' }}><i className="fas fa-copy"></i> Добавить физическую копию</div>
-                  <div className="book-form">
-                    <div className="admin-search-wrapper" style={{ marginBottom: '12px' }}>
-                      <input type="text" placeholder="ID книги (издания) для копии" />
-                      <button><i className="fas fa-search"></i> Поиск</button>
-                    </div>
-                    <input type="text" placeholder="Инвентарный номер (уникальный)" />
-                    <select>
-                      <option>В наличии</option>
-                      <option>Выдана</option>
-                      <option>Списана</option>
-                      <option>Ремонт</option>
-                    </select>
-                    <span className="btn-sm btn-success" style={{ alignSelf: 'flex-start' }}><i className="fas fa-plus"></i> Добавить копию</span>
-                  </div>
-                  <div className="profile-preview" style={{ marginTop: '20px', background: '#f1ebe6' }}>
-                    <div className="profile-row"><span><i className="fas fa-info-circle"></i> Пример: книга «Мастер и Маргарита» (ID: B-101) — добавлено 3 копии (INV-101, INV-102, INV-103)</span></div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <BookFundManagement />
 
             {/* БЛОК 4: РЕДАКТИРОВАТЬ / УДАЛИТЬ КНИГУ */}
             <div className="card full-width">

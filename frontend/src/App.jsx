@@ -24,7 +24,7 @@ function App() {
         if (user.success){
           setUserData(user.data)
         } else {
-          toast.error("Ошибка получения данных")
+          console.log("Ошибка получения данных пользователя, требуется авторизация")
         }
       }
       getUser()

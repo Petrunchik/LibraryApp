@@ -475,3 +475,29 @@ body {
   padding: 8px 20px;
   border-radius: 60px;
 }
+
+/* Для контейнера загрузки обложки */
+.upload-container {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* Для подсказки о размере файла */
+.upload-hint {
+  font-size: 12px;
+  color: #8f7f71;
+}
+
+/* Для кнопки добавления издания */
+.submit-button {
+  align-self: flex-start;
+}
+
+/* Для заголовка секции */
+.section-header {
+  font-weight: 600;
+  margin-bottom: 18px;
+  font-size: 16px;
+}
