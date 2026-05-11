@@ -108,11 +108,12 @@ async def add_book(
     id = uuid4()
     book = Book(
         **new_book.model_dump(),
-        id=id
+        id=id,
+        is_active=True,
     )
-    db.add(book)
-    await db.commit()
-    await db.refresh(book)
+    # db.add(book)
+    # await db.commit()
+    # await db.refresh(book)
     return book
 
 

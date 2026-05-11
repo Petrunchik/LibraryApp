@@ -3,8 +3,10 @@ import AddingBookCopy from "./AddingBookCopy"
 import { addNewBook } from "../../services/adminProfile"
 import { toast } from "../../hooks/useToast"
 import { isAllDigits } from "../../services/fieldChecker"
+import { copyField } from "../../services/copyField"
 
 function BookFundManagement () {
+  const [bookId, setBookId] = useState(null)
   const [form, setForm] = useState({
     title: "",
     description: "",
@@ -29,6 +31,7 @@ function BookFundManagement () {
       year_of_release: "",
       publisher: "",
       genre: "",
+      image_url: null,
     })
   }
 
@@ -51,6 +54,7 @@ function BookFundManagement () {
     const response = await addNewBook(form)
     if (response.success){
       clearForm()
+      setBookId(response.data.id)
       toast.success("Книга добавлена!")
     } else {
       toast.error("Ошибка отправки!")
@@ -130,7 +134,12 @@ function BookFundManagement () {
               accept="image/png, image/jpeg"
               style={{ display: 'none' }}
             />
-
+            {bookId && (
+              <div className="inventory-message">
+                Книга добавлена, ID книги:
+                <span className="inventory-number" onClick={() => copyField(bookId)}>{bookId}</span>
+              </div>
+            )}
             <span className="btn-sm btn-primary submit-button" onClick={handleSubmit}>
               <i className="fas fa-save"></i> Добавить издание
             </span>
