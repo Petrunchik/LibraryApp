@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from app.routers import books, users, loans, reservation
+from app.routers import books, users, loans, reservation, bookCopy
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(
@@ -10,6 +10,7 @@ app.include_router(router=books.router)
 app.include_router(router=users.router)
 app.include_router(router=loans.router)
 app.include_router(router=reservation.router)
+app.include_router(router=bookCopy.router)
 
 app.add_middleware(
     CORSMiddleware,

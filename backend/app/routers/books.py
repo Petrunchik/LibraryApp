@@ -23,7 +23,7 @@ async def get_all_books(db: AsyncSession = Depends(get_async_db)):
         select(
             Book,
             func.count(BookCopy.id).label("total"),
-            func.sum(case((BookCopy.status == "доступна", 1), else_=0)).label("available_copies"),
+            func.sum(case((BookCopy.status == "В наличии", 1), else_=0)).label("available_copies"),
             func.coalesce(func.avg(Review.grade), 0).label("rating"),
             func.count(func.distinct(Review.id)).label("total_rating_count"),
         )
@@ -66,7 +66,7 @@ async def get_book_info(book_id: UUID, db: AsyncSession = Depends(get_async_db))
         select(
             Book,
             func.count(BookCopy.id).label("total"),
-            func.sum(case((BookCopy.status == "доступна", 1), else_=0)).label("available_copies"),
+            func.sum(case((BookCopy.status == "В наличии", 1), else_=0)).label("available_copies"),
             func.coalesce(func.avg(Review.grade), 0).label("rating"),
             func.count(func.distinct(Review.id)).label("total_rating_count"),
         )

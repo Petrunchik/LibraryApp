@@ -23,3 +23,7 @@ export const addNewBook = (data) => {
 export const getBookInfo = (bookId) => {
     return apiClient.get(`/books/${bookId}/info`)
 }
+
+export const addBookCopy = (data) => {
+    return apiClient.post("/bookCopy/", data)
+}

@@ -3,21 +3,27 @@ import { getBookInfo } from "../services/adminProfile"
 import { toast } from "../hooks/useToast"
 import SearchBookDetail from "./SearchBookDetail"
 
-function SearchBook({ setMessage }) {
+function SearchBook({ title, setData }) {
     // Состояния для поиска книги
     const [bookQuery, setBookQuery] = useState("")
     const [bookResult, setBookResult] = useState(null)
     const [bookLoading, setBookLoading] = useState(false)
 
+    const onChange = (e) => {
+        setBookQuery(e.target.value)
+    }
+
     const searchBook = async () => {
         if (!bookQuery.trim()) {
-            setMessage({ type: 'error', text: 'Введите ID книги или название' })
+            toast.error("Введите ID книги")
+            setBookResult(null)
             return
         }
         setBookLoading(true)
         const response = await getBookInfo(bookQuery)
         if (response.success){
             setBookResult(response.data)
+            setData(prev => ({...prev, book: response.data}))
             toast.success("Книга найдена!")
             setBookLoading(false)
         } else {
@@ -42,7 +48,7 @@ function SearchBook({ setMessage }) {
     return (
         <div className="search-book">
             <div className="search-title">
-                <i className="fas fa-book"></i> Поиск книги
+                <i className="fas fa-book"></i> {title}
             </div>
             <div className="search-input-wrapper">
                 <input
@@ -50,7 +56,7 @@ function SearchBook({ setMessage }) {
                     placeholder="ID книги или название"
                     className="input-field search-input"
                     value={bookQuery}
-                    onChange={(e) => setBookQuery(e.target.value)}
+                    onChange={(e) => onChange(e)}
                     onKeyPress={(e) => e.key === 'Enter' && searchBook()}
                 />
                 <span

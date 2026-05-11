@@ -558,3 +558,33 @@ body {
     flex-direction: column;
     gap: 12px;
 }
+
+/* ======== СООБЩЕНИЕ ОБ ИНВЕНТАРНОМ НОМЕРЕ ======== */
+.inventory-message {
+    display: block;
+    padding: 16px 20px;
+    background: #fefcf9;
+    border: 1px solid #ede5dd;
+    border-radius: 24px;
+    font-size: 14px;
+    color: #5c4d41;
+    margin: 16px 0;
+}
+
+.inventory-message strong {
+    color: #6b4e3a;
+    font-weight: 600;
+}
+
+.inventory-number {
+    display: inline-block;
+    background: #f1ebe6;
+    padding: 4px 12px;
+    border-radius: 40px;
+    font-family: monospace;
+    font-size: 13px;
+    font-weight: 600;
+    color: #4f3a2b;
+    margin-left: 8px;
+    cursor: pointer;
+}

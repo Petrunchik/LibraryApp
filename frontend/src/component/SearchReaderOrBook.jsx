@@ -15,7 +15,7 @@ function SearchReaderOrBook() {
                 <SearchUser setMessage={setMessage}/>
 
                 {/* Правая сторона - поиск книги */}
-                <SearchBook setMessage={setMessage}/>
+                <SearchBook setMessage={setMessage} title="Поиск книги"/>
             </div>
             
             {/* Блок сообщений */}
