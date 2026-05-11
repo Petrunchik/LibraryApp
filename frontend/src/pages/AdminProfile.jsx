@@ -6,6 +6,7 @@ import '../style/AdminProfileStyle.css'
 import { getUserInfo } from '../services/getUserInfo'
 import BookFundManagement from '../component/AdminProfile/BookFundManagement'
 import { RedirectToHome } from '../services/redirectToHome'
+import EditOrDeleteBook from '../component/AdminProfile/EditOrDeleteBook'
 
 function AdminProfile () {
   const [userData, setUserData] = useState(null)
@@ -57,56 +58,7 @@ function AdminProfile () {
             <BookFundManagement />
 
             {/* БЛОК 4: РЕДАКТИРОВАТЬ / УДАЛИТЬ КНИГУ */}
-            <div className="card full-width">
-              <div className="card-header">
-                <h2><i className="fas fa-edit"></i> Редактировать / удалить книгу</h2>
-                <span className="badge">поиск по ID издания</span>
-              </div>
-              <div className="grid-2col">
-                <div>
-                  <div className="admin-search-wrapper" style={{ marginBottom: '24px' }}>
-                    <input type="text" id="searchBookId" placeholder="Введите ID книги (например, B-101)" defaultValue="B-101" />
-                    <button id="searchBookBtn"><i className="fas fa-search"></i> Найти</button>
-                  </div>
-                  <div className="book-form" id="editBookForm">
-                    <input type="text" placeholder="Название книги" defaultValue="Мастер и Маргарита" />
-                    <textarea rows="2" placeholder="Описание" defaultValue="Бессмертный роман Михаила Булгакова, сочетающий мистику, сатиру и философию."></textarea>
-                    <input type="text" placeholder="Количество страниц" defaultValue="416" />
-                    <input type="text" placeholder="Автор" defaultValue="Михаил Булгаков" />
-                    <input type="text" placeholder="Год выпуска" defaultValue="2023" />
-                    <input type="text" placeholder="Издательство" defaultValue="Азбука-классика" />
-                    <input type="text" placeholder="Жанр" defaultValue="Роман, мистика" />
-                    <div style={{ display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap' }}>
-                      <span className="btn-sm btn-dark"><i className="fas fa-upload"></i> Загрузить новую обложку</span>
-                    </div>
-                    <div className="actions" style={{ marginTop: '8px' }}>
-                      <span className="btn-sm btn-warning"><i className="fas fa-save"></i> Сохранить изменения</span>
-                      <span className="btn-sm btn-danger"><i className="fas fa-trash"></i> Удалить книгу (издание)</span>
-                    </div>
-                  </div>
-                </div>
-                <div>
-                  <div style={{ fontWeight: 600, marginBottom: '18px', fontSize: '16px' }}>Информация о книге</div>
-                  <div className="book-info-card found-book" id="bookInfoCard">
-                    <div className="profile-row"><span><strong>ID книги:</strong></span><span>B-101</span></div>
-                    <div className="profile-row"><span><strong>Название:</strong></span><span>Мастер и Маргарита</span></div>
-                    <div className="profile-row"><span><strong>Автор:</strong></span><span>Михаил Булгаков</span></div>
-                    <div className="profile-row"><span><strong>Год:</strong></span><span>2023</span></div>
-                    <div className="profile-row"><span><strong>Издательство:</strong></span><span>Азбука-классика</span></div>
-                    <div className="profile-row"><span><strong>Жанр:</strong></span><span>Роман, мистика</span></div>
-                    <div className="profile-row"><span><strong>Страниц:</strong></span><span>416</span></div>
-                    <div className="profile-row"><span><strong>Физических копий:</strong></span><span>3 (INV-101, INV-102, INV-103)</span></div>
-                    <div className="profile-row"><span><strong>Доступно:</strong></span><span>2 экз.</span></div>
-                  </div>
-                  <div className="profile-preview" style={{ marginTop: '20px', background: '#fefaf5' }}>
-                    <div className="profile-row"><span><i className="fas fa-info-circle"></i> <strong>Физические копии (инвентарные номера):</strong></span></div>
-                    <div className="profile-row"><span>INV-101 · статус: В наличии</span><span className="btn-sm btn-warning">Редактировать копию</span></div>
-                    <div className="profile-row"><span>INV-102 · статус: Выдана</span><span className="btn-sm btn-warning">Редактировать</span></div>
-                    <div className="profile-row"><span>INV-103 · статус: В наличии</span><span className="btn-sm btn-warning">Редактировать</span></div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <EditOrDeleteBook />
 
             {/* БЛОК 5: СТАТИСТИКА И ОТЧЁТЫ */}
             <div className="card full-width">

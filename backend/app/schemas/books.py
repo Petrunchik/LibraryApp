@@ -32,3 +32,7 @@ class BookCreate(BaseModel):
     image_url: str | None = Field(None, description="Ссылка на изображение")
     publisher: str | None = Field(None, description="Издательство книги")
     genre: str | None = Field(None, description="Жанр книги")
+
+
+class EditBook(DefaultBookAnswer):
+    pass

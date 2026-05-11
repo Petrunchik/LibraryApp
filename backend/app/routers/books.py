@@ -1,13 +1,13 @@
 from uuid import uuid4, UUID
 from fastapi import APIRouter, Depends, status, HTTPException
-from sqlalchemy import delete, func, select, case
+from sqlalchemy import delete, func, select, case, update
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.database.db_depends import get_async_db
 from app.models import Book, BookCopy, Review, User
 from app.auth.auth import get_current_reader, get_current_admin
 from app.schemas.review import ReviewCreate
 
-from app.schemas.books import BookAnswer, BookCreate, DefaultBookAnswer
+from app.schemas.books import BookAnswer, BookCreate, DefaultBookAnswer, EditBook
 
 router = APIRouter(
     prefix="/books",
@@ -111,9 +111,9 @@ async def add_book(
         id=id,
         is_active=True,
     )
-    # db.add(book)
-    # await db.commit()
-    # await db.refresh(book)
+    db.add(book)
+    await db.commit()
+    await db.refresh(book)
     return book
 
 
@@ -138,6 +138,19 @@ async def add_grade(
     await db.commit()
     await db.refresh(grade)
     return grade
+
+
+@router.put("/", status_code=status.HTTP_204_NO_CONTENT)
+async def edit_book(
+    data: EditBook,
+    db: AsyncSession = Depends(get_async_db),
+    current_user: User = Depends(get_current_admin)
+    ):
+    await db.execute(update(Book).where(
+        Book.id == data.id
+    ).values(**data.model_dump()))
+    await db.commit()
+    return
 
 
 @router.delete("/{book_id}", status_code=status.HTTP_200_OK)

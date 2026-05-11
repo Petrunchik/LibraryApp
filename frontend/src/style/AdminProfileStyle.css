@@ -588,3 +588,31 @@ body {
     margin-left: 8px;
     cursor: pointer;
 }
+
+/* ======== РЕДАКТИРОВАНИЕ / УДАЛЕНИЕ КНИГИ ======== */
+.edit-book-search-wrapper {
+    margin-bottom: 24px;
+}
+
+.edit-book-form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.edit-book-upload {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.edit-book-actions {
+    margin-top: 8px;
+}
+
+.book-info-section-title {
+    font-weight: 600;
+    margin-bottom: 18px;
+    font-size: 16px;
+}

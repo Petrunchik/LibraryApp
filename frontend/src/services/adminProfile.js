@@ -27,3 +27,11 @@ export const getBookInfo = (bookId) => {
 export const addBookCopy = (data) => {
     return apiClient.post("/bookCopy/", data)
 }
+
+export const editBook = (data) => {
+    return apiClient.put("/books/", data)
+}
+
+export const deleteBook = (bookId) => {
+    return apiClient.delete(`/books/${bookId}`)
+}
