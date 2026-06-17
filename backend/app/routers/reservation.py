@@ -106,7 +106,7 @@ async def create_request(
 
 @router.post("/moderate")
 async def review_booking_request(
-    resesrvation_data: ReservationIssue,
+    reservation_data: ReservationIssue,
     db: AsyncSession = Depends(get_async_db),
     current_user: User = Depends((get_current_manager))
     ):
@@ -116,23 +116,23 @@ async def review_booking_request(
 
     reservation = await db.scalar(
         select(Reservation)
-        .where(Reservation.reader_id == resesrvation_data.reader_id)
+        .where(Reservation.reader_id == reservation_data.reader_id)
     )
     if reservation is None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Бронирование не найдено")
-    
+    print(reservation_data.book_id)
     result = await db.scalar(
         select(func.count(BookCopy.id))
         .where(
-            BookCopy.book_id == resesrvation_data.book_id,
-            BookCopy.status == "доступна"
+            BookCopy.book_id == reservation_data.book_id,
+            BookCopy.status == "В наличии"
         )
     )
 
     if result <= 0:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Книги нет в наличии")
     
-    reservation.status = resesrvation_data.status
+    reservation.status = reservation_data.status
     reservation.manager_id = current_user.id
     reservation.date_of_expire = date.today()
 

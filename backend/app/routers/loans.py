@@ -1,17 +1,17 @@
 from uuid import uuid4, UUID
 from sqlalchemy import delete, func, select, case
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.database.db_depends import get_async_db
-from app.models import Book, BookCopy
+from ..database.db_depends import get_async_db
+from ..models import Book, BookCopy
 from fastapi import APIRouter, Depends, status, HTTPException, Response, Request
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.database.db_depends import get_async_db
-from app.schemas.loans import LoanCreate, ReturnBook, LoanAnswer
-from app.models.loan import Loan
+from ..database.db_depends import get_async_db
+from ..schemas.loans import LoanCreate, ReturnBook, LoanAnswer
+from ..models.loan import Loan
 from datetime import datetime, timedelta, date
-from app.models.users import User
-from app.auth.auth import get_current_reader
+from ..models.users import User
+from ..auth.auth import get_current_reader, get_current_manager
 
 router = APIRouter(
     prefix="/loans",
@@ -47,10 +47,12 @@ async def get_user_loans(
 
 
 @router.post("/")
-async def add_issue(data: LoanCreate, db: AsyncSession = Depends(get_async_db)):
+async def add_issue(data: LoanCreate, db: AsyncSession = Depends(get_async_db), current_user: User = Depends(get_current_manager)):
+    """ Функция для выдачи книги пользователю (только для менеджера) """
+    
     book_copy = await db.scalar(select(BookCopy).where(
         BookCopy.id == data.book_copy_id,
-        BookCopy.status == "доступна"
+        BookCopy.status == "В наличии"
     ))
     if book_copy is None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Книга не найдена или уже выдана")
@@ -94,7 +96,7 @@ async def return_book(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Книга не найдена или уже выдана")
     refund.date_of_return = datetime.now()
     refund.comment = data.comment or None
-    book_copy.status = "доступна"
+    book_copy.status = "В наличии"
     db.add(refund, book_copy)
     await db.commit()
     return {"status": "ok"}

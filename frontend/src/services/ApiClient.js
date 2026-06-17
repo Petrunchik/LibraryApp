@@ -1,5 +1,4 @@
 import { toast } from "../hooks/useToast"
-import { updateAccessToken } from "./updateAccessToken"
 
 class ApiClient {
     constructor() {
@@ -40,7 +39,7 @@ class ApiClient {
         }
 
         if (body) {
-            fetchOptions.body = JSON.stringify(body)
+            fetchOptions.body = body instanceof URLSearchParams ? body : JSON.stringify(body)
         }
 
         try {
@@ -57,7 +56,7 @@ class ApiClient {
                 // Обработка 401 с повторной попыткой
                 if (response.status === 401 && retryCount < this.maxRetries && requiresAuth) {
                     console.log("Сессия истекла, пробуем обновить токен...")
-                    const refreshResult = await updateAccessToken()
+                    const refreshResult = await this.updateAccessToken()
                     
                     if (refreshResult.success) {
                         console.log("Токен успешно обновлен")
@@ -117,6 +116,70 @@ class ApiClient {
 
     async publicGet(url, options = {}) {
         return this.#request(url, { ...options, method: 'GET', requiresAuth: false })
+    }
+
+    async loginUser(userData) {
+        const formData = new URLSearchParams()
+        formData.append('username', userData.phone)
+        formData.append('password', userData.password)
+
+        const result = await this.publicPost('/users/token', formData, {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+        })
+
+        if (result.success && result.data?.access_token) {
+            localStorage.setItem('access_token', result.data.access_token)
+            toast.info("Вы успешно вошли в аккаунт!")
+        }
+
+        return result
+    }
+
+    async registerUser(userData) {
+        const requestBody = {
+            role: userData.role || "reader",
+            first_name: userData.name,
+            last_name: userData.lastName,
+            phone_number: userData.phone,
+            password: userData.password
+        }
+
+        const result = await this.publicPost('/users', requestBody)
+
+        if (result.success && result.data?.access_token) {
+            localStorage.setItem('access_token', result.data.access_token)
+            toast.info("Вы успешно зарегистрировались!")
+        }
+
+        return result
+    }
+
+    async logoutUser() {
+        const result = await this.get('/users/signout')
+        if (result.success) {
+            localStorage.removeItem('access_token')
+            toast.info("Вы успешно вышли из аккаунта!")
+        }
+        return result
+    }
+
+    async updateAccessToken() {
+        const result = await this.get('/users/refresh-token')
+
+        if (!result.ok) {
+            if (result.status === 401){
+                // Refresh token в cookies истек или невалиден
+                localStorage.removeItem('access_token')
+                // Можно перенаправить на логин
+                // window.location.href = '/login'
+            }
+            throw new Error('Ошибка обновления токена');
+        }
+        if (result.data?.access_token) {
+            localStorage.setItem('access_token', result.data.access_token);
+        }
     }
 }
 
