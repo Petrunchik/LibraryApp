@@ -4,6 +4,7 @@ class ApiClient {
     constructor() {
         this.baseURL = import.meta.env.API_BASE_URL || 'http://localhost:8000'
         this.maxRetries = 1
+        this.refreshTokenPromise = null
     }
 
     // Приватный метод для заголовков
@@ -32,6 +33,15 @@ class ApiClient {
             headers = {}
         } = options
 
+        if (requiresAuth && !localStorage.getItem('access_token')) {
+            return {
+                success: false,
+                error: "Требуется авторизация",
+                status: 401,
+                errorStatus: 401
+            }
+        }
+
         const fetchOptions = {
             method,
             headers: this.#getHeaders(requiresAuth, headers),
@@ -54,7 +64,7 @@ class ApiClient {
 
             if (!response.ok) {
                 // Обработка 401 с повторной попыткой
-                if (response.status === 401 && retryCount < this.maxRetries && requiresAuth) {
+                if (response.status === 401 && retryCount < this.maxRetries && requiresAuth && url !== '/users/refresh-token') {
                     console.log("Сессия истекла, пробуем обновить токен...")
                     const refreshResult = await this.updateAccessToken()
                     
@@ -166,20 +176,35 @@ class ApiClient {
     }
 
     async updateAccessToken() {
-        const result = await this.get('/users/refresh-token')
+        if (this.refreshTokenPromise) {
+            return this.refreshTokenPromise
+        }
 
-        if (!result.ok) {
-            if (result.status === 401){
-                // Refresh token в cookies истек или невалиден
-                localStorage.removeItem('access_token')
-                // Можно перенаправить на логин
-                // window.location.href = '/login'
-            }
-            throw new Error('Ошибка обновления токена');
-        }
-        if (result.data?.access_token) {
-            localStorage.setItem('access_token', result.data.access_token);
-        }
+        this.refreshTokenPromise = this.publicGet('/users/refresh-token')
+            .then((result) => {
+                if (!result.success) {
+                    if (result.status === 401){
+                        // Refresh token в cookies истек или невалиден
+                        localStorage.removeItem('access_token')
+                        // Можно перенаправить на логин
+                        // window.location.href = '/login'
+                    }
+                    return result
+                }
+                if (result.data?.access_token) {
+                    localStorage.setItem('access_token', result.data.access_token);
+                }
+                return result
+            })
+            .finally(() => {
+                this.refreshTokenPromise = null
+            })
+
+        return this.refreshTokenPromise
+    }
+
+    hasAccessToken() {
+        return Boolean(localStorage.getItem('access_token'))
     }
 }
 

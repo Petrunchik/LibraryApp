@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { logout } from '../services/logout';
+import { logoutUser } from '../services/logout';
 import { formatDate } from '../services/formatDate';
 import { displayPhone } from '../services/displayPhone';
 import { getUserInfo } from "../services/getUserInfo"
@@ -85,7 +85,7 @@ function ReaderProfileInfo ({ showFines, setShowFines }) {
                 <i className="fas fa-key"></i> Сменить пароль
               </button>
             </div>
-            <button className="sec-btn logout-full" onClick={() => logout()}>
+            <button className="sec-btn logout-full" onClick={() => logoutUser()}>
               <i className="fas fa-sign-out-alt"></i> Выйти из профиля
             </button>
             {/* Кнопка для переключения отображения штрафов (для тестирования) */}

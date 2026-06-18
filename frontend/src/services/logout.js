@@ -1,5 +1,7 @@
 import { apiClient } from "./ApiClient"
 
-export const logoutUser = async () => {
+export const logout = async () => {
     return apiClient.logoutUser()
 }
+
+export const logoutUser = logout
