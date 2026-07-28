@@ -6,6 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.database.db_depends import get_async_db
 from app.models import User, Loan, Fines, Reservation, Book, BookCopy, Review
 import jwt
+from loguru import logger
 from settings import SECRET_KEY, ALGORITHM
 from app.schemas.users import UserAnswer, UserCreate, UserPhone, UserPhoneAnswer, UserDefaultAnswer, UserReference
 from app.auth.auth import hash_password, verify_password, create_access_token, create_refresh_token, get_current_manager, get_current_loggined, get_current_reader, get_current_admin
@@ -220,6 +221,8 @@ async def add_user(user: UserCreate, response: Response, db: AsyncSession = Depe
         httponly=True,
     )
 
+    logger.info(f"Регистрация нового пользователя: {db_user.first_name} {db_user.last_name}, номер телефона: {db_user.phone_number}, id: {db_user.id}")
+
     return {
         "id": db_user.id,
         "phone_number": db_user.phone_number,
@@ -338,6 +341,9 @@ async def demote_manager(
     user.date_of_update = datetime.now()
     db.add(user)
     await db.commit()
+
+    logger.info(f"Менеджер удален: {user.first_name} {user.last_name}, ID: {user.id}. Удалил: {current_user.first_name} {current_user.last_name}, ID: {current_user.id}")
+
     return 
 
 

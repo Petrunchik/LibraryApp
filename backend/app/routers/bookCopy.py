@@ -42,7 +42,6 @@ async def add_book_copy(
         inventory_number=inventory_number,
         status=data.status,
         book_id=data.book_id,
-
     )
     db.add(new_book_copy)
     await db.commit()
