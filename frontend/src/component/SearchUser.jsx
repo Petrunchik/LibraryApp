@@ -1,14 +1,12 @@
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { getUserByPhone } from "../services/getUserByPhone"
 import { checkPhoneNumber } from "../services/fieldChecker"
 
-function SearchUser({ setMessage }) {
-    const [loading, setLoading] = useState(false)
-
-    // Состояния для поиска читателя
+function SearchUser() {
     const [readerQuery, setReaderQuery] = useState("")
     const [readerResult, setReaderResult] = useState(null)
     const [readerLoading, setReaderLoading] = useState(false)
+    const [message, setMessage] = useState(null)
 
     const copyId = (text) => {
         navigator.clipboard.writeText(text)
@@ -23,6 +21,7 @@ function SearchUser({ setMessage }) {
     const searchReader = async () => {
         if (checkPhoneNumber(readerQuery).status === "flex") {
             setMessage({ type: 'error', text: checkPhoneNumber(readerQuery).message})
+            setReaderResult(null)
             return
         }
         setReaderLoading(true)
@@ -50,36 +49,36 @@ function SearchUser({ setMessage }) {
     }
 
     return (
-        <div>
-            <div style={{ fontWeight: 600, marginBottom: '16px' }}>
-                <i className="fas fa-user"></i> Поиск читателя
-            </div>
-            <div style={{ display: 'flex', gap: '8px', marginBottom: '20px' }}>
+        <div className="manager-search-panel">
+            <div className="manager-search-form">
                 <input
                     type="text"
                     placeholder="ID или номер телефона"
                     className="input-field"
-                    style={{ flex: 1, padding: '12px 16px', borderRadius: '60px', border: '1px solid #e7dfd7' }}
                     value={readerQuery}
                     onChange={(e) => setReaderQuery(e.target.value)}
-                    onKeyPress={(e) => e.key === 'Enter' && searchReader()}
+                    onKeyDown={(e) => e.key === 'Enter' && searchReader()}
                 />
                 <span
                     className="btn-sm btn-primary"
                     onClick={searchReader}
-                    style={{ cursor: 'pointer', padding: '8px 20px' }}
                 >
                     {readerLoading ? <i className="fas fa-spinner fa-pulse"></i> : <i className="fas fa-search"></i>} Найти
                 </span>
             </div>
 
+            {message && (
+                <div className={`search-panel-message ${message.type === 'success' ? 'message-success' : 'message-error'}`}>
+                    <i className={`fas ${message.type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle'}`}></i>
+                    <span>{message.text}</span>
+                    <button type="button" onClick={() => setMessage(null)}>
+                        <i className="fas fa-times"></i>
+                    </button>
+                </div>
+            )}
+
             {readerResult && (
-                <div style={{
-                    background: '#fefcf9',
-                    borderRadius: '24px',
-                    border: '1px solid #e0d6cd',
-                    padding: '20px'
-                }}>
+                <div className="reader-result-card">
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
                         <h3 style={{ fontSize: '18px', fontWeight: 600, color: '#3a2e28' }}>
                             <i className="fas fa-user-circle"></i> {readerResult.lastName} {readerResult.firstName}
