@@ -5,6 +5,7 @@ from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from passlib.context import CryptContext
+from loguru import logger
 from settings import SECRET_KEY, ALGORITHM
 from ..database.db_depends import get_async_db
 from ..schemas.users import UserDefaultAnswer
@@ -16,7 +17,6 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 REFRESH_TOKEN_EXPIRE_DAYS = 7
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="users/token")
-
 
 def hash_password(password: str):
     """
@@ -115,8 +115,11 @@ async def get_current_manager(current_user: User = Depends(get_current_user)):
     """
     Проверяет что пользователь имеет роль менеджера
     """
+
     if current_user.role not in ["manager", "admin"]:
+        logger.warning(f"Попытка входа в систему менеджера: Имя: {current_user.first_name}, Фамилия: {current_user.last_name}, ID: {current_user.id}, Роль: {current_user.role}, Дата регистрации: {current_user.date_of_create}, Статус: {current_user.is_active}")
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Только менеджер может выполнить это действие")
+    logger.info(f"Роль: {current_user.role}, ID: {current_user.id}, {current_user.first_name} {current_user.last_name} вошел в систему.")
     return current_user
 
 
@@ -125,5 +128,7 @@ async def get_current_admin(current_user: User = Depends(get_current_user)):
     Проверяет что пользователь имеет роль администратора
     """
     if current_user.role != "admin":
+        logger.warning(f"Попытка входа в систему администратора: Имя: {current_user.first_name}, Фамилия: {current_user.last_name}, ID: {current_user.id}, Роль: {current_user.role}, Дата регистрации: {current_user.date_of_create}, Статус: {current_user.is_active}")
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Только адимнистратор может выполнить это действие")
+    logger.info(f"Роль: {current_user.role}, ID: {current_user.id}, {current_user.first_name} {current_user.last_name} вошел в систему.")
     return current_user

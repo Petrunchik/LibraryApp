@@ -2,6 +2,7 @@ from uuid import uuid4, UUID
 from fastapi import APIRouter, Depends, status, HTTPException
 from sqlalchemy import delete, func, select, case, update
 from sqlalchemy.ext.asyncio import AsyncSession
+from loguru import logger
 from app.database.db_depends import get_async_db
 from app.models import Book, BookCopy, Review, User
 from app.auth.auth import get_current_reader, get_current_admin
@@ -164,4 +165,7 @@ async def delete_book_by_id(
     book.is_active = False
     await db.commit()
     await db.refresh(book)
+
+    logger.info(f"Книга {book} удалена")
+    
     return book
