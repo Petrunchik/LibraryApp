@@ -1,10 +1,20 @@
-import os
-from dotenv import load_dotenv
+from pydantic_settings import BaseSettings, SettingsConfigDict
+from functools import lru_cache
 
-load_dotenv()
 
-DATABASE_URL = os.getenv("DATABASE_URL")
+class Settings(BaseSettings):
+    database_url: str
+    algorithm: str
+    secret_key: str
+    access_token_expire_minutes: int = 10
+    refresh_token_expire_days: int = 1
 
-ALGORITHM = os.getenv("ALGORITHM")
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+    )
 
-SECRET_KEY = os.getenv("SECRET_KEY")
+
+@lru_cache
+def get_settings() -> Settings:
+    return Settings()
