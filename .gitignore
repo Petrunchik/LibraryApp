@@ -16,3 +16,4 @@ backend/app/schemas/__pycache__
 backend/app/models/__pycache__
 backend/app/services/
 .idea/
+/backend/logs
