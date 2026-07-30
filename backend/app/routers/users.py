@@ -7,7 +7,7 @@ from app.database.db_depends import get_async_db
 from app.models import User, Loan, Fines, Reservation, Book, BookCopy, Review
 import jwt
 from loguru import logger
-from settings import SECRET_KEY, ALGORITHM
+from settings import Settings, get_settings
 from app.schemas.users import UserAnswer, UserCreate, UserPhone, UserPhoneAnswer, UserDefaultAnswer, UserReference
 from app.auth.auth import hash_password, verify_password, create_access_token, create_refresh_token, get_current_manager, get_current_loggined, get_current_reader, get_current_admin
 from datetime import datetime
@@ -272,7 +272,8 @@ async def login(
 async def refresh_token(
     request: Request,
     response: Response,
-    db: AsyncSession = Depends(get_async_db)
+    db: AsyncSession = Depends(get_async_db),
+    settings: Settings = Depends(get_settings)
 ):
     """
     Обновляет токены, принимая refresh-токен в куках.
@@ -284,7 +285,7 @@ async def refresh_token(
     )
     old_refresh_token = request.cookies.get("refresh_token")
     try:
-        payload = jwt.decode(old_refresh_token, SECRET_KEY, algorithms=[ALGORITHM])
+        payload = jwt.decode(old_refresh_token, settings.secret_key, algorithms=[settings.algorithm])
         phone: str | None = payload.get("sub")
         token_type: str | None = payload.get("token_type")
         if phone is None or token_type != "refresh":
