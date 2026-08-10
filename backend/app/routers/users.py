@@ -284,6 +284,8 @@ async def refresh_token(
         headers={"WWW-Authenticate": "Bearer"},
     )
     old_refresh_token = request.cookies.get("refresh_token")
+    settings = get_settings()
+
     try:
         payload = jwt.decode(old_refresh_token, settings.secret_key, algorithms=[settings.algorithm])
         phone: str | None = payload.get("sub")
@@ -300,14 +302,25 @@ async def refresh_token(
         User.phone_number == phone,
         User.is_active == True
     ))
+
     if user is None:
         raise credentials_exception
-    new_refresh_token = create_refresh_token(data={
-        "sub": user.phone_number, "role": user.role, "id": str(user.id)
-    })
-    new_access_token = create_access_token(data={
-        "sub": user.phone_number, "role": user.role, "id": str(user.id)
-    })
+
+    token_data = {
+        "sub": user.phone_number,
+        "role": user.role,
+        "id": str(user.id),
+    }
+
+    new_refresh_token = create_refresh_token(
+        data=token_data, 
+        settings=settings
+    )
+    new_access_token = create_access_token(
+        data=token_data,
+        settings=settings
+    )
+
     response.set_cookie(
         key="refresh_token",
         value=new_refresh_token,
