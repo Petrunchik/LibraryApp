@@ -11,7 +11,7 @@ def setup_logging():
 
     logger.add(
         "logs/app.log",
-        level="DEBUG",
+        level="ERROR",
         rotation="10 MB",
         retention="1 month",
         compression="zip",

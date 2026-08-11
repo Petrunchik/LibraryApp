@@ -256,8 +256,22 @@ async def login(
             detail="Неправильный номер телефона или пароль",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    access_token = create_access_token(data={"sub": user.phone_number, "role": user.role, "id": str(user.id) })
-    refresh_token = create_refresh_token(data={"sub": user.phone_number, "role": user.role, "id": str(user.id) })
+    
+    settings = get_settings()
+
+    token_data = {
+        "sub": user.phone_number,
+        "role": user.role,
+        "id": str(user.id)
+    }
+    access_token = create_access_token(
+        data=token_data,
+        settings=settings
+    )
+    refresh_token = create_refresh_token(
+        data=token_data,
+        settings=settings
+    )
 
     response.set_cookie(
         key="refresh_token",
