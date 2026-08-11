@@ -110,6 +110,10 @@ async def add_book(
     db: AsyncSession = Depends(get_async_db),
     current_user: User = Depends(get_current_admin)
     ):
+    """
+    Функция для добавления новой книги в базу данных.
+    Доступно только администратору.
+    """
     id = uuid4()
     book = Book(
         **new_book.model_dump(),
@@ -128,6 +132,10 @@ async def add_grade(
     db: AsyncSession = Depends(get_async_db),
     current_user: User = Depends(get_current_reader)
     ):
+    """
+    Функция для добавления оценки книги текущим пользователем.
+    Доступно только авторизованным пользователям.
+    """
     old_user_grade = await db.scalar(select(Review).where(
         Review.reader_id == current_user.id,
         Review.book_id == data.book_id
@@ -151,6 +159,10 @@ async def edit_book(
     db: AsyncSession = Depends(get_async_db),
     current_user: User = Depends(get_current_admin)
     ):
+    """
+    Функция для редактирования информации о книге.
+    Доступно только администратору.
+    """
     await db.execute(update(Book).where(
         Book.id == data.id
     ).values(**data.model_dump()))
@@ -161,8 +173,13 @@ async def edit_book(
 @router.delete("/{book_id}", status_code=status.HTTP_200_OK)
 async def delete_book_by_id(
     book_id: UUID,
-    db: AsyncSession = Depends(get_async_db)
+    db: AsyncSession = Depends(get_async_db),
+    current_user: User = Depends(get_current_admin),
     ):
+    """
+    Функция удаляет книгу по ID.
+    Доступно только администратору.
+    """
     book = await db.scalar(select(Book).where(Book.id == book_id))
     if book is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Книга не найдена или была удалена ранее")

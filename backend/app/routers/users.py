@@ -31,6 +31,9 @@ router = APIRouter(
 
 @router.get("/signout")
 async def signout(response: Response):
+    """
+    Функция для выхода пользователя из системы.
+    """
     response.delete_cookie(
         key="refresh_token",
         httponly=True
@@ -40,6 +43,10 @@ async def signout(response: Response):
 
 @router.get("/info", response_model=UserDefaultAnswer)
 async def get_user_info(current_user: User = Depends(get_current_loggined)):
+    """
+    Функция для получения информации о текущем пользователе.
+    Доступно для всех авторизованных пользователей.
+    """
     return current_user
 
 
@@ -48,6 +55,10 @@ async def get_user_by_phone(
     phone: str,
     db: AsyncSession = Depends(get_async_db),
     current_user: User = Depends(get_current_manager)):
+    """
+    Функция для получения информации о пользователе по его телефонному номеру.
+    Доступно только менеджеру.
+    """
     user_stmt = await db.execute(
         select(
             User,
@@ -87,6 +98,10 @@ async def get_user_by_phone(
 async def get_user_reservation(
     db: AsyncSession = Depends(get_async_db),
     current_user: User = Depends(get_current_reader)):
+    """
+    Функция для получения информации о бронированиях текущего пользователя.
+    Доступно для всех авторизованных пользователей.
+    """
     result = await db.execute(
         select(Reservation, Book)
         .where(
@@ -112,6 +127,10 @@ async def get_user_reservation(
 async def get_history_reading(
     db: AsyncSession = Depends(get_async_db),
     current_user: User = Depends(get_current_reader)):
+    """
+    Функция для получения информации о прочитанных книгах текущего пользователя.
+    Доступно для всех авторизованных пользователей.
+    """
     result = await db.execute(
         select(
             Loan,
@@ -147,7 +166,8 @@ async def get_managers_list(
     current_user: User = Depends(get_current_admin)
     ):
     """
-    Возвращает список менеджеров.
+    Функция для получения списка менеджеров.
+    Доступно только администратору.
     """
     managers_stmt = await db.scalars(select(User).where(
         User.is_active == True,
@@ -195,7 +215,7 @@ async def add_manager(
 @router.post("/", response_model=UserAnswer, status_code=status.HTTP_201_CREATED)
 async def add_user(user: UserCreate, response: Response, db: AsyncSession = Depends(get_async_db)):
     """
-    Регистрирует нового пользователя с ролью reader
+    Регистрирует нового пользователя с ролью reader.
     """
     result = await db.scalar(select(User).where(User.phone_number == user.phone_number))
     if result is not None:

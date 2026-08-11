@@ -29,7 +29,8 @@ async def get_all_reservation(
     current_user: User = Depends(get_current_manager)
     ):
     """
-    Получает все отправленные запросы на бронирование, доступно менеджеру.
+    Получает все отправленные запросы на бронирование.
+    Доступно только менеджеру.
     """
     stmt = await db.execute(
         select(Reservation, Book, User)
@@ -62,7 +63,8 @@ async def create_request(
     db: AsyncSession = Depends(get_async_db),
     current_user: User = Depends(get_current_reader)):
     """
-    Создает запрос на создание бронирования
+    Создает запрос на бронирование книги.
+    Доступно только авторизованным пользователям.
     """
     reservation = await db.scalar(select(func.count(Reservation.id)).where(
         Reservation.status != "issued",
@@ -112,6 +114,7 @@ async def review_booking_request(
     ):
     """
     Отметка готовности книги к выдаче или отклонение запроса в профиле менеджера.
+    Доступно только менеджеру.
     """
 
     reservation = await db.scalar(

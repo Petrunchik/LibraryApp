@@ -24,6 +24,9 @@ async def get_user_loans(
     user: User = Depends(get_current_reader),
     db: AsyncSession = Depends(get_async_db)
 ):
+    """
+    Функция для получения информации о текущих выданных книгах пользователя.
+    """
     result = await db.execute(
         select(Loan, Book)
         .where(Loan.user_id == user.id, Loan.date_of_return == None)
@@ -48,7 +51,10 @@ async def get_user_loans(
 
 @router.post("/")
 async def add_issue(data: LoanCreate, db: AsyncSession = Depends(get_async_db), current_user: User = Depends(get_current_manager)):
-    """ Функция для выдачи книги пользователю (только для менеджера) """
+    """
+    Функция для выдачи книги пользователю 
+    Доступно только для менеджера
+    """
     
     book_copy = await db.scalar(select(BookCopy).where(
         BookCopy.id == data.book_copy_id,
@@ -86,7 +92,13 @@ async def add_issue(data: LoanCreate, db: AsyncSession = Depends(get_async_db), 
 @router.post("/return_book")
 async def return_book(
     data: ReturnBook,
-    db: AsyncSession = Depends(get_async_db)):
+    db: AsyncSession = Depends(get_async_db),
+    current_user: User = Depends(get_current_manager)
+    ):
+    """
+    Функция для возврата книги пользователем.
+    Доступно только для менеджера.
+    """
     book_copy = await db.scalar(select(BookCopy).where(
         BookCopy.id == data.book_copy_id,
         BookCopy.status == "выдана"

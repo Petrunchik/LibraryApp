@@ -24,6 +24,8 @@ async def generate_inventory_number(book_id: UUID, db: AsyncSession):
 
 @router.get("/")
 async def get_all_book_copy(db: AsyncSession = Depends(get_async_db)):
+    """
+    Функция возвращает все экземпляры книг"""
     response = await db.scalars(select(BookCopy))
     books = response.all()
     return books
@@ -35,6 +37,10 @@ async def add_book_copy(
     db: AsyncSession = Depends(get_async_db),
     current_user: User = Depends(get_current_admin)
     ):
+    """
+    Функция добавляет экземпляр книги в базу данных.
+    Доступно только администратору.
+    """
     id = uuid4()
     inventory_number = await generate_inventory_number(data.book_id, db)
     new_book_copy = BookCopy(
