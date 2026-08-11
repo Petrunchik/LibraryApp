@@ -52,6 +52,8 @@ async def get_all_books(db: AsyncSession = Depends(get_async_db)):
             "available_copies": available_copies,
             "rating": float(review) if review else 0,
             "total_rating_count": total_rating_count,
+            "language": book.language,
+            "age_restriction": book.age_restriction,
         }
         response_books.append(book_dict)
 
@@ -96,6 +98,8 @@ async def get_book_info(book_id: UUID, db: AsyncSession = Depends(get_async_db))
         "available_copies": available_copies,
         "rating": float(rating) if rating else 0,
         "total_rating_count": total_rating_count,
+        "language": book.language,
+        "age_restriction": book.age_restriction,
     }
     return book_dict
 

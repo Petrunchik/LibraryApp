@@ -15,6 +15,8 @@ class Book(Base):
     is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default='true')
     publisher: Mapped[str] = mapped_column(String(100), server_default="Отсутствует информация об издательстве", nullable=False)
     genre: Mapped[str] = mapped_column(String(50), server_default="Отсутствует информация о жанре", nullable=False)
+    language: Mapped[str | None] = mapped_column(String(40))
+    age_restriction: Mapped[int | None] = mapped_column(SmallInteger)
 
     bookCopy: Mapped[list["BookCopy"]] = relationship(
         "BookCopy",
