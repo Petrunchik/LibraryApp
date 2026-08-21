@@ -77,6 +77,7 @@ async def get_user_by_phone(
     for user, active_loans in rows:
         user_data = UserPhoneAnswer(
             id=user.id,
+            public_id=user.public_id,
             role=user.role,
             first_name=user.first_name,   
             last_name=user.last_name,       
@@ -187,13 +188,14 @@ async def add_manager(
     Добавляет менеджера по ID или номеру телефона.
     Доступно только администратору.
     """
-    if (data.phone_number is None) and (data.id is None):
+    if (data.phone_number is None) and (data.id is None) and (data.public_id is None):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Одно из полей обязательно к заполнению!")
     
     user = await db.scalar(select(User).where(
         or_(
             User.phone_number == data.phone_number if data.phone_number else False,
-            User.id == data.id if data.id else False
+            User.id == data.id if data.id else False,
+            User.public_id == data.public_id if data.public_id else False,
         ),
         User.role != "admin",
         User.is_active == True,
@@ -213,7 +215,7 @@ async def add_manager(
 
 
 @router.post("/", response_model=UserAnswer, status_code=status.HTTP_201_CREATED)
-async def add_user(user: UserCreate, response: Response, db: AsyncSession = Depends(get_async_db)):
+async def add_user(user: UserCreate, response: Response, db: AsyncSession = Depends(get_async_db), settings: Settings = Depends(get_settings)):
     """
     Регистрирует нового пользователя с ролью reader.
     """
@@ -232,8 +234,8 @@ async def add_user(user: UserCreate, response: Response, db: AsyncSession = Depe
     await db.commit()
     await db.refresh(db_user)
 
-    access_token = create_access_token(data={"sub": user.phone_number, "role": user.role, "id": str(db_user.id) })
-    refresh_token = create_refresh_token(data={"sub": user.phone_number, "role": user.role, "id": str(db_user.id) })
+    access_token = create_access_token(data={"sub": user.phone_number, "role": user.role, "id": str(db_user.id) }, settings=settings)
+    refresh_token = create_refresh_token(data={"sub": user.phone_number, "role": user.role, "id": str(db_user.id) }, settings=settings)
     
     response.set_cookie(
         key="refresh_token",
@@ -245,6 +247,7 @@ async def add_user(user: UserCreate, response: Response, db: AsyncSession = Depe
 
     return {
         "id": db_user.id,
+        "public_id": db_user.public_id,
         "phone_number": db_user.phone_number,
         "first_name": db_user.first_name,
         "last_name": db_user.last_name,

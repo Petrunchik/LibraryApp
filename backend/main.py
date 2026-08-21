@@ -1,7 +1,7 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
-from app.routers import books, users, loans, reservation, bookCopy
+from app.routers import books, users, loans, reservation, bookCopy, genres, publishers
 from fastapi.middleware.cors import CORSMiddleware
 from loguru import logger
 from logging_config import setup_logging
@@ -30,6 +30,8 @@ app.include_router(router=users.router)
 app.include_router(router=loans.router)
 app.include_router(router=reservation.router)
 app.include_router(router=bookCopy.router)
+app.include_router(router=genres.router)
+app.include_router(router=publishers.router)
 
 app.add_middleware(
     CORSMiddleware,

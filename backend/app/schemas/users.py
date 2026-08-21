@@ -9,6 +9,7 @@ from datetime import datetime
 
 class UserDefaultAnswer(BaseModel):
     id: UUID = Field(..., description="ID пользователя")
+    public_id: str = Field(..., description="Публичный ID пользователя")
     role: str = Field(..., description="Роль пользователя")
     first_name: str = Field(..., description="Имя пользователя")
     last_name: str = Field(..., description="Фамилия пользователя")
@@ -41,6 +42,7 @@ class UserPhone(BaseModel):
 
 class UserPhoneAnswer(BaseModel):
     id: UUID = Field(..., description="ID пользователя")
+    public_id: str = Field(..., description="Публичный ID пользователя")
     last_name: str = Field(..., description="Фамилия пользователя")
     first_name: str = Field(..., description="Имя пользователя")
     phone_number: str = Field(..., description="Телефон пользователя")
@@ -53,5 +55,6 @@ class UserPhoneAnswer(BaseModel):
 
 
 class UserReference(BaseModel):
-    id: UUID | None = Field(..., description="ID пользователя")
-    phone_number: str | None = Field(..., description="Телефон пользователя")
+    id: UUID | None = Field(None, description="ID пользователя")
+    public_id: str | None = Field(None, description="Публичный ID пользователя")
+    phone_number: str | None = Field(None, description="Телефон пользователя")
