@@ -10,7 +10,7 @@ import { BooksContext } from '../context/BooksContext'
 import { useState, useMemo } from 'react'
 
 function MainPage () {
-    const { books: bookList, loading } = useBooks()
+    const { books: bookList, loading, loadingMore, hasMoreBooks, loadMoreBooks } = useBooks()
 
     const [searchQuery, setSearchQuery] = useState('')
     const [sortQuery, setSortQuery] = useState('')
@@ -23,7 +23,8 @@ function MainPage () {
         if (searchFilter.length > 0){
             result = result.filter(book => 
             book.title.toLowerCase().includes(searchFilter) ||
-            book.author.toLowerCase().includes(searchFilter) || 
+            book.authorsText.toLowerCase().includes(searchFilter) || 
+            book.genresText.toLowerCase().includes(searchFilter) ||
             book.id.includes(searchFilter)
         )}
 
@@ -74,6 +75,10 @@ function MainPage () {
             filterQuery,
             setFilterQuery,
             lengthOfBooks,
+            loadingMore,
+            hasMoreBooks,
+            loadMoreBooks,
+            canLoadMoreBooks: searchQuery.trim().length === 0,
         }}
         >
             <div className="library-container">

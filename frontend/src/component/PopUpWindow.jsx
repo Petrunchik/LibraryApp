@@ -10,6 +10,7 @@ function PopUpWindow({ isOpen, onClose, bookData }) {
 
   const copyId = (text) => {
     navigator.clipboard.writeText(text)
+    console.log(bookData)
   } 
 
   const toBook = async (bookId) => { 
@@ -61,7 +62,7 @@ function PopUpWindow({ isOpen, onClose, bookData }) {
               </div>
               <div className="stat-item">
                 <i className="fas fa-calendar-alt"></i>
-                <span>Возраст: {bookData?.age || '16+'}</span>
+                <span>Возраст: {bookData?.age_restriction || '16+'}</span>
               </div>
             </div>
           </div>
@@ -69,12 +70,12 @@ function PopUpWindow({ isOpen, onClose, bookData }) {
           {/* Правая колонка - детальная информация */}
           <div className="modal-right">
             <h2 className="modal-book-title">{bookData?.title || 'Название книги'}</h2>
-            <p className="modal-book-author">{bookData?.author || 'Автор'}</p>
+            <p className="modal-book-author">{bookData?.authorsText || 'Автор'}</p>
 
             <div className="modal-meta-grid">
               <div className="meta-pair">
                 <span className="meta-label">Издательство</span>
-                <span className="meta-value">{bookData?.publisher || '—'}</span>
+                <span className="meta-value">{bookData?.publisher?.name || '—'}</span>
               </div>
               <div className="meta-pair">
                 <span className="meta-label">Год издания</span>
@@ -82,15 +83,15 @@ function PopUpWindow({ isOpen, onClose, bookData }) {
               </div>
               <div className="meta-pair">
                 <span className="meta-label">Жанр</span>
-                <span className="meta-value">{bookData?.genre || '—'}</span>
+                <span className="meta-value">{bookData?.genresText || '—'}</span>
               </div>
               <div className="meta-pair">
                 <span className="meta-label">ID книги</span>
                 <span
                   className="meta-value"
-                  onClick={() => copyId(bookData?.id || '—')}
+                  onClick={() => copyId(bookData?.book_public_id || '—')}
                   style={{"cursor": "pointer"}}
-                >{bookData?.id || '—'}</span>
+                >{bookData?.book_public_id || '—'}</span>
               </div>
             </div>
 
@@ -115,10 +116,14 @@ function PopUpWindow({ isOpen, onClose, bookData }) {
 
             <div className="modal-extra">
               <div className="extra-tags">
-                {bookData?.tags?.length > 0 ? (
-                  bookData.tags.map((tag, idx) => (
-                    <span key={idx} className="tag">#{tag}</span>
-                  ))
+                {bookData?.genres?.length > 0 ? (
+                  bookData.genres.map((genre, idx) => {
+                    const genreName = typeof genre === "string" ? genre : genre.name
+
+                    return (
+                      <span key={genre.id ?? genreName ?? idx} className="tag">#{genreName}</span>
+                    )
+                  })
                 ) : (
                   <span className="tag">#книга</span>
                 )}

@@ -65,7 +65,7 @@ function HandleLogInField () {
           navigateTo(redirectPath)
           clearAllField()
         } else {
-          toast.error(result.error)
+          toast.error("Ошибка подключения к серверу, повторите попытку позднее.")
         }
       }
     }
@@ -132,7 +132,7 @@ function HandleLogInField () {
             </div>
           </div> */}
 
-          <div className="forgot-password-block">
+          <div className="forgot-password-block" onClick={() => navigateTo('/forgot-password')}>
             <a href="#" className="forgot-password-card">
               <span className="forgot-icon">
                 <i className="fas fa-key"></i>

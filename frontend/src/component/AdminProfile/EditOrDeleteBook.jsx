@@ -99,7 +99,7 @@ function EditOrDeleteBook () {
                             <span className="btn-sm btn-dark"><i className="fas fa-upload"></i> Загрузить новую обложку</span>
                         </div>
                         <div className="actions edit-book-actions">
-                            <span className="btn-sm btn-warning" onClick={() => handleSubmit()}><i className="fas fa-save"></i> Сохранить изменения</span>
+                            <span className="btn-sm btn-primary submit-button" onClick={() => handleSubmit()}><i className="fas fa-save"></i> Сохранить изменения</span>
                             <span className="btn-sm btn-danger" onClick={() => deactivateBook()}><i className="fas fa-trash"></i> Удалить книгу (издание)</span>
                         </div>
                     </div>

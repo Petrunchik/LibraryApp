@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect, useRef } from "react";
 import { BooksContext } from "../context/BooksContext";
 import BookItem from "./BookItem";
 import PopUpWindow from "./PopUpWindow";
@@ -8,10 +8,15 @@ function BookList() {
     const {
         bookList,
         filteredBooks,
+        loadingMore,
+        hasMoreBooks,
+        loadMoreBooks,
+        canLoadMoreBooks,
     } = useContext(BooksContext)
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedBook, setSelectedBook] = useState(null);
+    const loadMoreRef = useRef(null);
 
     const handleOpenModal = (book) => {
         setSelectedBook(book);
@@ -25,6 +30,23 @@ function BookList() {
     
     // Определяем, какие книги показывать
     const booksToShow = filteredBooks ?? bookList;
+    const loadMoreTriggerIndex = booksToShow.length > 18 ? Math.max(18, booksToShow.length - 12) : null;
+
+    useEffect(() => {
+        if (!loadMoreRef.current || !hasMoreBooks || loadingMore || !canLoadMoreBooks) return
+
+        const observer = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting) {
+                loadMoreBooks()
+            }
+        }, {
+            rootMargin: "200px 0px",
+        })
+
+        observer.observe(loadMoreRef.current)
+
+        return () => observer.disconnect()
+    }, [booksToShow.length, canLoadMoreBooks, hasMoreBooks, loadMoreBooks, loadingMore])
     
     // Проверяем, есть ли книги для отображения
     const hasNoBooks = !booksToShow || booksToShow.length === 0;
@@ -40,20 +62,30 @@ function BookList() {
             </div>
         );
     }
-    const numberOfBooks = filteredBooks ?? bookList
     return (
         <>
             <div className="books-grid">
-                {(filteredBooks ?? bookList).map((book) => {
+                {booksToShow.map((book, index) => {
                     return (
-                        <BookItem 
-                            key={book.id} 
-                            book={book}
-                            onOpenModal={handleOpenModal}
-                        />
+                        <div
+                            className="book-list-item"
+                            key={book.id}
+                            ref={loadMoreTriggerIndex === index + 1 ? loadMoreRef : null}
+                        >
+                            <BookItem 
+                                book={book}
+                                onOpenModal={handleOpenModal}
+                            />
+                        </div>
                     );
                 })}
             </div>
+
+            {loadingMore && (
+                <div className="books-loading-more">
+                    <i className="fas fa-spinner fa-pulse"></i> Загружаем ещё книги...
+                </div>
+            )}
             
             <PopUpWindow 
                 isOpen={isModalOpen}

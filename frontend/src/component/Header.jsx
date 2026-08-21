@@ -4,7 +4,7 @@ import ProfileLink from "./ProfileLink";
 function Header() {
     return (
         <header className="header">
-            <div className="logo-area">
+            <div className="logo-area" style={{cursor: 'pointer'}} onClick={() => window.location.reload()}>
                 <i className="fas fa-book-open logo-icon"></i>
                 <span className="logo-text">Книжный червь</span>
                 <span className="logo-tagline">библиотека</span>

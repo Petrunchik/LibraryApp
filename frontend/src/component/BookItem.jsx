@@ -1,5 +1,5 @@
 function BookItem({ book, onOpenModal }) {
-    const { title, author, availability, year, rating, image_url } = book
+    const { title, authorsText, genresText, availability, year, rating, image_url } = book
     const isAvailabile = availability === 'В наличии'
     return (
         <div className="book-card" onClick={() => onOpenModal(book)}>
@@ -12,7 +12,8 @@ function BookItem({ book, onOpenModal }) {
                 )}
             </div>
             <div className="book-title">{title}</div>
-            <div className="book-author">{author}</div>
+            <div className="book-author">{authorsText}</div>
+            <div className="book-genre">{genresText}</div>
             <div className="book-meta">
                 <span className={isAvailabile ? "availability" : "expected"}>
                     <i className={isAvailabile ? 'fas fa-check' : 'fas fa-clock'}></i>

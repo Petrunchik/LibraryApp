@@ -7,6 +7,8 @@ import { copyField } from "../../services/copyField"
 
 function BookFundManagement () {
   const [bookId, setBookId] = useState(null)
+  const [filename, setFilename] = useState(null)
+  const [uploadFile, setUploadFile] = useState(null)
   const [form, setForm] = useState({
     title: "",
     description: "",
@@ -33,6 +35,31 @@ function BookFundManagement () {
       genre: "",
       image_url: null,
     })
+  }
+  
+  const handleUploadFile = async (event) => {
+    const file = event.target.files[0]
+    const maxFileSize = 2 * 1024 * 1024
+    const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg']
+
+    if (file) {
+      if (file.size > maxFileSize) {
+        toast.error("Размер изображения не должен превышать 2 МБ!")
+        return
+      } else if (!allowedTypes.includes(file.type)) {
+        toast.error("Для загрузки доступны только PNG и JPG изображения!")
+        return
+      } else {
+        setFilename(file.name)
+        setUploadFile(file)
+        return
+      }
+    }
+  }
+
+  const cancelDownloadFile = async () => {
+    setFilename(null)
+    setUploadFile(null)
   }
 
   const handleSubmit = async () => {
@@ -124,16 +151,19 @@ function BookFundManagement () {
             />
 
             <div className="upload-container">
-              <span className="btn-sm btn-dark">
+              <label className="btn-sm btn-dark">
                 <i className="fas fa-upload"></i> Загрузить обложку
-              </span>
-              <span className="upload-hint">PNG, JPG до 2MB</span>
+                <input type="file" accept="image/*" style={{ display: 'none' }} onChange={handleUploadFile}/>
+              </label>
+              <div>
+                {filename ? (
+                    <label style={{ cursor: 'pointer' }} onClick={cancelDownloadFile}>
+                        <i className="fa fa-times-circle" aria-hidden="true"></i>
+                    </label>
+                ) : ""}
+              </div>
+              <span className="upload-hint">{filename || 'PNG, JPG до 2MB'}</span>
             </div>
-            <input
-              type="file"
-              accept="image/png, image/jpeg"
-              style={{ display: 'none' }}
-            />
             {bookId && (
               <div className="inventory-message">
                 Книга добавлена, ID книги:
