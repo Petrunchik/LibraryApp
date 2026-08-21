@@ -25,7 +25,7 @@ function ReaderProfileInfo ({ showFines, setShowFines }) {
 
     const idDisplay = loading 
     ? <span className="fas fa-spinner fa-pulse" style={{ marginLeft: 'auto' }}></span>
-    : <span className="info-value" style={{cursor: "pointer"}} onClick={() => copyField(userData?.id)}>
+    : <span className="info-value" style={{cursor: "pointer"}} onClick={() => copyField(userData?.public_id)}>
         {userData?.public_id ?? "ID"}
     </span>
 

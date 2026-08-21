@@ -3,6 +3,7 @@ import { getReservationInfo } from '../services/getReservationInfo'
 import { useEffect, useState } from "react"
 import { formatDateShort } from "../services/formatDate"
 import { toast } from "../hooks/useToast"
+import { formatAuthors } from "../services/bookFormat"
 
 function ReservationProfile () {
     const [loading, setLoading] = useState(false)
@@ -52,7 +53,7 @@ function ReservationProfile () {
                         <ReservationProfileDetail
                             key={index}
                             title={item.title}
-                            author={item.author}
+                            author={formatAuthors(item.author ?? item.authors)}
                             imageUrl={item.image_url}
                             returnToDate={formatDateShort(item.date_of_create)}
                             expireToDate={item.date_of_expire}

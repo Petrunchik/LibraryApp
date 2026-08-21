@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react"
 import { searchBooksByTitle } from "../services/searchBooksByTitle"
+import { formatAuthors, formatGenres } from "../services/bookFormat"
 
 const BOOKS_PER_PAGE = 5
 
@@ -106,9 +107,9 @@ function SearchBooksByTitle() {
                                     <span>{book.title}</span>
                                 </div>
                                 <div className="manager-book-result-meta">
-                                    <span><i className="fas fa-user-edit"></i> {book.author || "Автор не указан"}</span>
+                                    <span><i className="fas fa-user-edit"></i> {formatAuthors(book.authors)}</span>
                                     <span><i className="fas fa-calendar-alt"></i> {book.year_of_release || "Год не указан"}</span>
-                                    <span><i className="fas fa-tag"></i> {book.genre || "Жанр не указан"}</span>
+                                    <span><i className="fas fa-tag"></i> {formatGenres(book.genres)}</span>
                                 </div>
                             </div>
                             <div className="manager-book-result-side">

@@ -1,3 +1,5 @@
+import { formatAuthors, formatGenres, formatPublisher } from "../services/bookFormat"
+
 function SearchBookDetail ({ bookData }) {
     return (
         <div className="book-result-card">
@@ -19,16 +21,16 @@ function SearchBookDetail ({ bookData }) {
 
                     <div className="book-details">
                         <div className="book-detail-item">
-                            <i className="fas fa-user-edit"></i> <strong>Автор:</strong> {bookData.author}
+                            <i className="fas fa-user-edit"></i> <strong>Автор:</strong> {formatAuthors(bookData.authors)}
                         </div>
                         <div className="book-detail-item">
                             <i className="fas fa-calendar-alt"></i> <strong>Год выпуска:</strong> {bookData.year_of_release}
                         </div>
                         <div className="book-detail-item">
-                            <i className="fas fa-building"></i> <strong>Издательство:</strong> {bookData.publisher}
+                            <i className="fas fa-building"></i> <strong>Издательство:</strong> {formatPublisher(bookData.publisher)}
                         </div>
                         <div className="book-detail-item">
-                            <i className="fas fa-tag"></i> <strong>Жанр:</strong> {bookData.genre}
+                            <i className="fas fa-tag"></i> <strong>Жанр:</strong> {formatGenres(bookData.genres)}
                         </div>
                         <div className="book-detail-item">
                             <i className="fas fa-copy"></i> <strong>Количество копий:</strong> {bookData.total}

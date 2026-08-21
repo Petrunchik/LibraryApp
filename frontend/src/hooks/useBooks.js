@@ -1,42 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { formatAuthors, formatGenres } from '../services/bookFormat';
 
 const BOOKS_PER_PAGE = 30;
-
-const formatAuthors = (authors) => {
-    if (!Array.isArray(authors) || authors.length === 0) {
-        return "Автор не указан"
-    }
-
-    return authors
-        .map((author) => {
-            if (typeof author === "string") {
-                return author
-            }
-
-            return [author.first_name, author.last_name]
-                .filter(Boolean)
-                .join(" ")
-        })
-        .filter(Boolean)
-        .join(", ")
-}
-
-const formatGenres = (genres) => {
-    if (!Array.isArray(genres) || genres.length === 0) {
-        return "Жанр не указан"
-    }
-
-    return genres
-        .map((genre) => {
-            if (typeof genre === "string") {
-                return genre
-            }
-
-            return genre.name
-        })
-        .filter(Boolean)
-        .join(", ")
-}
 
 const formatBook = (book) => ({
     id: book.id,
@@ -48,7 +13,7 @@ const formatBook = (book) => ({
     genres: book.genres,
     genresText: formatGenres(book.genres),
     genre: formatGenres(book.genres),
-    year: book.year_of_release.toString(),
+    year: book.year_of_release != null ? String(book.year_of_release) : "",
     rating: book.rating,
     image_url: book.image_url,
     description: book.description,
@@ -57,8 +22,8 @@ const formatBook = (book) => ({
     language: book.language,
     age_restriction: book.age_restriction,
     borrowed_copies: book.borrowed_copies,
-    available_copies: book.available_copies,
-    availability: book.available_copies > 0 ? "В наличии" : "Ожидается",
+    available_copies: Number(book.available_copies) || 0,
+    availability: (Number(book.available_copies) || 0) > 0 ? "В наличии" : "Ожидается",
     totalRatingCount: book.total_rating_count,
 });
 
@@ -79,6 +44,10 @@ export const useBooks = () => {
         try {
             const response = await fetch(`${API_BASE_URL}/books/?skip=${books.length}&limit=${BOOKS_PER_PAGE}`)
             const data = await response.json()
+            if (!Array.isArray(data)) {
+                return
+            }
+
             const formattedBooks = data.map(formatBook)
 
             setBooks((currentBooks) => {
@@ -103,6 +72,12 @@ export const useBooks = () => {
         fetch(`${API_BASE_URL}/books/?skip=0&limit=${BOOKS_PER_PAGE}`)
             .then(res => res.json())
             .then(data => {
+                if (!Array.isArray(data)) {
+                    setBooks([])
+                    setHasMoreBooks(false)
+                    return
+                }
+
                 const formattedBooks = data.map(formatBook);
                 setBooks(formattedBooks);
                 setHasMoreBooks(data.length === BOOKS_PER_PAGE)

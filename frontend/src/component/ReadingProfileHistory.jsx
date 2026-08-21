@@ -3,6 +3,7 @@ import ReadingHistoryDetail from "./ReadingHistoryDetail"
 import { addBookGrade, getUserHistoryReading } from "../services/readerProfile"
 import { formatDateShort } from "../services/formatDate"
 import { toast } from "../hooks/useToast"
+import { formatAuthors } from "../services/bookFormat"
 
 function ReadingProfileHistory() {
     // Состояние для сохранённых оценок книг
@@ -149,7 +150,7 @@ function ReadingProfileHistory() {
                         <ReadingHistoryDetail
                             key={index}
                             title={item.title}
-                            author={item.author}
+                            author={formatAuthors(item.author ?? item.authors)}
                             returnToDate={formatDateShort(item.date_of_return)}
                             imageUrl={item.image_url}
                             comment={item.comment}

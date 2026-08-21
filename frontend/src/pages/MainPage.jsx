@@ -25,7 +25,8 @@ function MainPage () {
             book.title.toLowerCase().includes(searchFilter) ||
             book.authorsText.toLowerCase().includes(searchFilter) || 
             book.genresText.toLowerCase().includes(searchFilter) ||
-            book.id.includes(searchFilter)
+            book.id.includes(searchFilter) ||
+            book.book_public_id?.toLowerCase().includes(searchFilter)
         )}
 
         switch(sortQuery){

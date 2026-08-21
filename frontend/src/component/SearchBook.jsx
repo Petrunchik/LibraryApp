@@ -53,7 +53,7 @@ function SearchBook({ title, setData }) {
             <div className="search-input-wrapper">
                 <input
                     type="text"
-                    placeholder="ID книги или название"
+                    placeholder="UUID, публичный ID или название"
                     className="input-field search-input"
                     value={bookQuery}
                     onChange={(e) => onChange(e)}

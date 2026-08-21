@@ -1,40 +1,61 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import AddingBookCopy from "./AddingBookCopy"
-import { addNewBook } from "../../services/adminProfile"
+import { addNewBook, getAuthors, getGenres, getPublishers } from "../../services/adminProfile"
 import { toast } from "../../hooks/useToast"
 import { isAllDigits } from "../../services/fieldChecker"
 import { copyField } from "../../services/copyField"
+import { formatAuthorLabel } from "../../services/bookFormat"
+
+const emptyForm = {
+  title: "",
+  description: "",
+  pages: "",
+  author_ids: [],
+  year_of_release: "",
+  publisher_id: "",
+  genre_ids: [],
+}
 
 function BookFundManagement () {
   const [bookId, setBookId] = useState(null)
   const [filename, setFilename] = useState(null)
   const [uploadFile, setUploadFile] = useState(null)
-  const [form, setForm] = useState({
-    title: "",
-    description: "",
-    pages: "",
-    author: "",
-    year_of_release: "",
-    publisher: "",
-    genre: "",
-  })
+  const [authors, setAuthors] = useState([])
+  const [genres, setGenres] = useState([])
+  const [publishers, setPublishers] = useState([])
+  const [form, setForm] = useState(emptyForm)
+
+  useEffect(() => {
+    const loadDirectories = async () => {
+      const [authorsResult, genresResult, publishersResult] = await Promise.all([
+        getAuthors(),
+        getGenres(),
+        getPublishers(),
+      ])
+
+      if (authorsResult.success) setAuthors(authorsResult.data || [])
+      if (genresResult.success) setGenres(genresResult.data || [])
+      if (publishersResult.success) setPublishers(publishersResult.data || [])
+    }
+
+    loadDirectories()
+  }, [])
 
   const handleChange = (e) => {
     const { name, value } = e.target
     setForm(prev => ({...prev, [name]: value}))
   }
 
+  const handleMultiSelect = (e) => {
+    const { name } = e.target
+    const values = Array.from(e.target.selectedOptions, (option) => Number(option.value))
+    setForm(prev => ({...prev, [name]: values}))
+  }
+
   const clearForm = () => {
-    setForm({
-      title: "",
-      description: "",
-      pages: "",
-      author: "",
-      year_of_release: "",
-      publisher: "",
-      genre: "",
-      image_url: null,
-    })
+    setForm(emptyForm)
+    setFilename(null)
+    setUploadFile(null)
   }
   
   const handleUploadFile = async (event) => {
@@ -67,24 +88,36 @@ function BookFundManagement () {
       (form.title?.trim().length === 0) 
       || (form.description?.trim().length === 0)
       || (form.pages?.trim().length === 0)
-      || (form.author?.trim().length === 0)
+      || (form.author_ids.length === 0)
       || (form.year_of_release?.trim().length === 0)
-      || (form.publisher?.trim().length === 0)
-      || (form.genre?.trim().length === 0)
+      || !form.publisher_id
+      || (form.genre_ids.length === 0)
     ){
       toast.info("Все поля обязательны к заполнению!")
-    } else if (!isAllDigits(form.year_of_release.trim()) || !(Number(form.year_of_release?.trim()) > 1000 && Number(form.year_of_release?.trim()) < 2026)) {
-      toast.info("Поле года выпуска должно быть от 1000 до 2026 года и состоять только из цифр!")
+      return
+    } else if (!isAllDigits(form.year_of_release.trim()) || !(Number(form.year_of_release?.trim()) >= 1500 && Number(form.year_of_release?.trim()) <= 2026)) {
+      toast.info("Поле года выпуска должно быть от 1500 до 2026 года и состоять только из цифр!")
+      return
     } else if (!isAllDigits(form.pages.trim())) {
       toast.info("Поле количества страниц должно состоять только из цифр!")
+      return
     }
-    const response = await addNewBook(form)
+
+    const response = await addNewBook({
+      title: form.title.trim(),
+      description: form.description.trim(),
+      pages: Number(form.pages),
+      author_ids: form.author_ids,
+      year_of_release: Number(form.year_of_release),
+      publisher_id: Number(form.publisher_id),
+      genre_ids: form.genre_ids,
+    })
     if (response.success){
       clearForm()
-      setBookId(response.data.id)
+      setBookId(response.data.book_public_id || response.data.id)
       toast.success("Книга добавлена!")
     } else {
-      toast.error("Ошибка отправки!")
+      toast.error(response.error || "Ошибка отправки!")
     }
   }
 
@@ -121,13 +154,17 @@ function BookFundManagement () {
               value={form.pages}
               onChange={handleChange}
             />
-            <input
-              name="author"
-              type="text"
-              placeholder="Автор (Фамилия Имя)"
-              value={form.author}
-              onChange={handleChange}
-            />
+            <select
+              multiple
+              name="author_ids"
+              value={form.author_ids.map(String)}
+              onChange={handleMultiSelect}
+            >
+              {authors.length === 0 && <option disabled value="">Авторы не найдены</option>}
+              {authors.map((author) => (
+                <option key={author.id} value={author.id}>{formatAuthorLabel(author)}</option>
+              ))}
+            </select>
             <input
               name="year_of_release"
               type="text"
@@ -135,20 +172,27 @@ function BookFundManagement () {
               value={form.year_of_release}
               onChange={handleChange}
             />
-            <input
-              name="publisher"
-              type="text"
-              placeholder="Издательство"
-              value={form.publisher}
+            <select
+              name="publisher_id"
+              value={form.publisher_id}
               onChange={handleChange}
-            />
-            <input
-              name="genre"
-              type="text"
-              placeholder="Жанр"
-              value={form.genre}
-              onChange={handleChange}
-            />
+            >
+              <option value="">Издательство</option>
+              {publishers.map((publisher) => (
+                <option key={publisher.id} value={publisher.id}>{publisher.name}</option>
+              ))}
+            </select>
+            <select
+              multiple
+              name="genre_ids"
+              value={form.genre_ids.map(String)}
+              onChange={handleMultiSelect}
+            >
+              {genres.length === 0 && <option disabled value="">Жанры не найдены</option>}
+              {genres.map((genre) => (
+                <option key={genre.id} value={genre.id}>{genre.name}</option>
+              ))}
+            </select>
 
             <div className="upload-container">
               <label className="btn-sm btn-dark">

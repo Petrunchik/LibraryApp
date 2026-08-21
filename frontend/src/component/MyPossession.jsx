@@ -3,6 +3,7 @@ import { getUserPossesion } from "../services/getUserPossesion"
 import MyPossessionDetailInfo from "./MyPossessionDetailInfo"
 import { formatDateShort } from "../services/formatDate"
 import { toast } from "../hooks/useToast"
+import { formatAuthors } from "../services/bookFormat"
 
 function MyPossession () {
 
@@ -51,7 +52,7 @@ function MyPossession () {
                   return (<MyPossessionDetailInfo
                       key={ index }
                       title={book.book_title}
-                      author={book.book_author}
+                      author={formatAuthors(book.book_author ?? book.authors)}
                       takenDate={formatDateShort(book.date_of_loan)}
                       returnToDate={formatDateShort(book.date_of_expected_return)}
                       imageUrl={book.image_url}

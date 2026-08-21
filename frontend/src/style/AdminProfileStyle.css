@@ -326,9 +326,14 @@ body {
   transition: border 0.2s, box-shadow 0.2s;
 }
 
-.book-form textarea {
+.book-form textarea,
+.book-form select[multiple] {
   border-radius: 24px;
   resize: vertical;
+}
+
+.book-form select[multiple] {
+  min-height: 96px;
 }
 
 .book-form input:focus, 
