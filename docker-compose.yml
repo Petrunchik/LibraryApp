@@ -1,0 +1,36 @@
+services:
+  user-service:
+    build: ./UserService
+    image: userservice
+    container_name: UserService
+    restart: always
+    ports:
+      - "8000:8000"
+  reservation-service:
+    build: ./ReservationService
+    image: reservationservice
+    container_name: ReservationService
+    restart: always
+    ports:
+      - "8001:8001"
+  payment-service:
+    build: ./PaymentService
+    image: paymentservice
+    container_name: PaymentService
+    restart: always
+    ports:
+      - "8002:8002"
+  library-service:
+    build: ./LibraryService
+    image: libraryservice
+    container_name: LibraryService
+    restart: always
+    ports:
+      - "8003:8003"
+  fine-service:
+    build: ./FineService
+    image: fineservice
+    container_name: FineService
+    restart: always
+    ports:
+      - "8004:8004"
