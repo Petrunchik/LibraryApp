@@ -22,6 +22,16 @@ services:
     depends_on:
       user-db:
         condition: service_healthy
+  reservation-db:
+    image: postgres:18
+    env_file:
+      - ./ReservationService/.env
+    volumes:
+      - reservation_db_data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$$POSTGRES_USER\" -d \"$$POSTGRES_DB\""]
+      interval: 5s
+      retries: 5
   reservation-service:
     build: ./ReservationService
     image: reservationservice
@@ -30,6 +40,11 @@ services:
     pull_policy: build
     ports:
       - "8001:8000"
+    env_file:
+      - ./ReservationService/.env
+    depends_on:
+      reservation-db:
+        condition: service_healthy
   payment-service:
     build: ./PaymentService
     image: paymentservice
@@ -57,3 +72,4 @@ services:
 
 volumes:
   user_db_data:
+  reservation_db_data:
