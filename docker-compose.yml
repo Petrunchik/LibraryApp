@@ -1,36 +1,59 @@
 services:
+  user-db:
+    image: postgres:18
+    env_file:
+      - ./UserService/.env
+    volumes:
+      - user_db_data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$$POSTGRES_USER\" -d \"$$POSTGRES_DB\""]
+      interval: 5s
+      retries: 5
   user-service:
     build: ./UserService
     image: userservice
     container_name: UserService
     restart: always
+    pull_policy: build
     ports:
       - "8000:8000"
+    env_file:
+      - ./UserService/.env
+    depends_on:
+      user-db:
+        condition: service_healthy
   reservation-service:
     build: ./ReservationService
     image: reservationservice
     container_name: ReservationService
     restart: always
+    pull_policy: build
     ports:
-      - "8001:8001"
+      - "8001:8000"
   payment-service:
     build: ./PaymentService
     image: paymentservice
     container_name: PaymentService
     restart: always
+    pull_policy: build
     ports:
-      - "8002:8002"
+      - "8002:8000"
   library-service:
     build: ./LibraryService
     image: libraryservice
     container_name: LibraryService
     restart: always
+    pull_policy: build
     ports:
-      - "8003:8003"
+      - "8003:8000"
   fine-service:
     build: ./FineService
     image: fineservice
     container_name: FineService
     restart: always
+    pull_policy: build
     ports:
-      - "8004:8004"
+      - "8004:8000"
+
+volumes:
+  user_db_data:
