@@ -15,8 +15,6 @@ services:
     container_name: UserService
     restart: always
     pull_policy: build
-    ports:
-      - "8000:8000"
     env_file:
       - ./UserService/.env
     depends_on:
@@ -38,8 +36,6 @@ services:
     container_name: ReservationService
     restart: always
     pull_policy: build
-    ports:
-      - "8001:8000"
     env_file:
       - ./ReservationService/.env
     depends_on:
@@ -61,8 +57,6 @@ services:
     container_name: PaymentService
     restart: always
     pull_policy: build
-    ports:
-      - "8002:8000"
     env_file:
       - ./PaymentService/.env
     depends_on:
@@ -84,8 +78,6 @@ services:
     container_name: LibraryService
     restart: always
     pull_policy: build
-    ports:
-      - "8003:8000"
     env_file:
       - ./LibraryService/.env
     depends_on:
@@ -107,13 +99,21 @@ services:
     container_name: FineService
     restart: always
     pull_policy: build
-    ports:
-      - "8004:8000"
     env_file:
       - ./FineService/.env
     depends_on:
       fine-db:
         condition: service_healthy
+  api-gateway:
+    build: ./APIGateway
+    image: apigateway
+    container_name: APIGateway
+    restart: always
+    pull_policy: build
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./APIGateway/.env
 
 volumes:
   user_db_data:
