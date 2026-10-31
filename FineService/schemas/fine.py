@@ -1,14 +1,10 @@
 from decimal import Decimal
 from uuid import UUID
 from datetime import datetime
-from enum import Enum
 
 from pydantic import BaseModel
 
-class FineStatus(str, Enum):
-    UNPAID = "unpaid"
-    PAID = "paid"
-    CANCELLED = "cancelled"
+from core.fine_status import FineStatus
 
 
 class FineResponse(BaseModel):

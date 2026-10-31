@@ -91,6 +91,16 @@ services:
     depends_on:
       library-db:
         condition: service_healthy
+  fine-db:
+    image: postgres:18
+    env_file:
+      - ./FineService/.env
+    volumes:
+      - fine_db_data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$$POSTGRES_USER\" -d \"$$POSTGRES_DB\""]
+      interval: 5s
+      retries: 5
   fine-service:
     build: ./FineService
     image: fineservice
@@ -99,9 +109,15 @@ services:
     pull_policy: build
     ports:
       - "8004:8000"
+    env_file:
+      - ./FineService/.env
+    depends_on:
+      fine-db:
+        condition: service_healthy
 
 volumes:
   user_db_data:
   reservation_db_data:
   payment_db_data:
   library_db_data:
+  fine_db_data:
