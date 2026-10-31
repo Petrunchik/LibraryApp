@@ -5,7 +5,7 @@ from pydantic import BaseModel
 class ReviewResponse(BaseModel):
     id: UUID
     grade: int
-    reader_id: int
+    reader_id: UUID
     book_id: UUID
 
 

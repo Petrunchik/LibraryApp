@@ -68,6 +68,16 @@ services:
     depends_on:
       payment-db:
         condition: service_healthy
+  library-db:
+    image: postgres:18
+    env_file:
+      - ./LibraryService/.env
+    volumes:
+      - library_db_data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$$POSTGRES_USER\" -d \"$$POSTGRES_DB\""]
+      interval: 5s
+      retries: 5
   library-service:
     build: ./LibraryService
     image: libraryservice
@@ -76,6 +86,11 @@ services:
     pull_policy: build
     ports:
       - "8003:8000"
+    env_file:
+      - ./LibraryService/.env
+    depends_on:
+      library-db:
+        condition: service_healthy
   fine-service:
     build: ./FineService
     image: fineservice
@@ -89,3 +104,4 @@ volumes:
   user_db_data:
   reservation_db_data:
   payment_db_data:
+  library_db_data:

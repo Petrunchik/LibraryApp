@@ -1,9 +1,8 @@
-from uuid import UUID
 
 from pydantic import BaseModel
 
 class PublisherResponse(BaseModel):
-    id: UUID
+    id: int
     name: str
     city: str
     country: str
