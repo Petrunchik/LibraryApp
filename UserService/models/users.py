@@ -1,16 +1,25 @@
 from uuid import UUID, uuid4
 from datetime import datetime
 
-from sqlalchemy import String, Sequence, text, func
+from sqlalchemy import Enum as SAEnum, String, Sequence, text, func
 from sqlalchemy.orm import Mapped, mapped_column
 
 from core.database import Base
+from core.user_role import UserRole
 
 
 user_public_id_seq = Sequence(
     "user_public_id_seq",
     start=1,
     increment=1
+)
+
+
+user_role_type = SAEnum(
+    UserRole,
+    name="user_role",
+    values_callable=lambda roles: [role.value for role in roles],
+    metadata=Base.metadata,
 )
 
 
@@ -29,6 +38,11 @@ class User(Base):
     phone_number: Mapped[str] = mapped_column(String(20), unique=True)
     password: Mapped[str] = mapped_column(nullable=False)
     email: Mapped[str | None] = mapped_column(unique=True)
+    role: Mapped[UserRole] = mapped_column(
+        user_role_type,
+        default=UserRole.READER,
+        server_default=UserRole.READER.value,
+    )
     is_active: Mapped[bool] = mapped_column(default=True)
     created_at: Mapped[datetime] = mapped_column(default=func.now())
     updated_at: Mapped[datetime] = mapped_column(default=func.now(), onupdate=func.now())

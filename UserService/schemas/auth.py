@@ -1,13 +1,8 @@
 from uuid import UUID
 from datetime import datetime
-from enum import Enum
 
 from pydantic import BaseModel
-
-class UserRoleScheme(str, Enum):
-    READER = "reader"
-    MANAGER = "manager"
-    ADMIN = "admin"
+from core.user_role import UserRole as UserRoleScheme
 
 class UserRegisterRequest(BaseModel):
     first_name: str
