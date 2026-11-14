@@ -8,7 +8,7 @@ router = APIRouter(
 )
 
 @router.post("/register", response_model=UserAuthResponse)
-async def register(request: UserRegisterRequest):
+async def register(user_data: UserRegisterRequest):
     """
     Функция для регистрации нового пользователя
     """
