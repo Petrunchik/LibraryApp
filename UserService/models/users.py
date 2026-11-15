@@ -11,7 +11,8 @@ from core.user_role import UserRole
 user_public_id_seq = Sequence(
     "user_public_id_seq",
     start=1,
-    increment=1
+    increment=1,
+    metadata=Base.metadata,
 )
 
 
@@ -28,10 +29,11 @@ class User(Base):
     id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)
     user_public_id: Mapped[str] = mapped_column(
         String(12),
-        Sequence("user_public_id_seq", start=1, increment=1),
-        server_default=text("'user_' || LPAD(nextval('user_public_id_seq')::text, 6, '0')"),
+        server_default=text(
+            "'user_' || LPAD(nextval('user_public_id_seq')::text, 6, '0')"
+        ),
         unique=True,
-        nullable=False
+        nullable=False,
     )
     first_name: Mapped[str] = mapped_column(String(50), nullable=False)
     last_name: Mapped[str] = mapped_column(String(50), nullable=False)
