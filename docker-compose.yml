@@ -27,6 +27,8 @@ services:
       retries: 5
   user-service:
     build: ./UserService
+    volumes:
+      - ./UserService/keys:/app/keys:ro
     image: userservice
     container_name: UserService
     restart: always
