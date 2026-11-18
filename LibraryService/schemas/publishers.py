@@ -15,6 +15,6 @@ class AddPublisher(BaseModel):
 
 
 class EditPublisher(BaseModel):
-    name: str
-    city: str
-    country: str
+    name: str | None
+    city: str | None
+    country: str | None
