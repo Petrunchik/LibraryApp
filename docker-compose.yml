@@ -1,4 +1,20 @@
 services:
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    hostname: rabbitmq
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: "guest"
+      RABBITMQ_DEFAULT_PASS: "guest"
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 7s
+      retries: 5
   user-db:
     image: postgres:18
     env_file:
@@ -19,6 +35,8 @@ services:
       - ./UserService/.env
     depends_on:
       user-db:
+        condition: service_healthy
+      rabbitmq:
         condition: service_healthy
   reservation-db:
     image: postgres:18
@@ -115,9 +133,22 @@ services:
     env_file:
       - ./APIGateway/.env
 
+  notification-service:
+    build: ./NotificationService
+    image: notificationservice
+    container_name: NotificationService
+    restart: always
+    pull_policy: build
+    env_file:
+      - ./NotificationService/.env
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+
 volumes:
   user_db_data:
   reservation_db_data:
   payment_db_data:
   library_db_data:
   fine_db_data:
+  rabbitmq-data:

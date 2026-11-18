@@ -12,6 +12,7 @@ class Settings(BaseSettings):
     postgres_port: int = 5432
     algorithm: str
     secret_key: str
+    rabbitmq_url: str
 
     model_config = SettingsConfigDict(
         env_file=".env",
