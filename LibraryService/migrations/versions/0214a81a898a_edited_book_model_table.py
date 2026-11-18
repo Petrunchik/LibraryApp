@@ -1,8 +1,8 @@
-"""create library schema
+"""edited book model table
 
-Revision ID: fd01ab0e90b6
-Revises: 
-Create Date: 2026-10-31 15:16:18.958988
+Revision ID: 0214a81a898a
+Revises: b349abb744d1
+Create Date: 2026-11-17 17:03:33.212529
 
 """
 from typing import Sequence, Union
@@ -12,8 +12,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'fd01ab0e90b6'
-down_revision: Union[str, Sequence[str], None] = None
+revision: str = '0214a81a898a'
+down_revision: Union[str, Sequence[str], None] = 'b349abb744d1'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
@@ -42,9 +42,12 @@ def upgrade() -> None:
     sa.Column('country', sa.String(length=50), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
+    op.execute(
+        "CREATE SEQUENCE IF NOT EXISTS book_public_id_seq START WITH 1 INCREMENT BY 1"
+    )
     op.create_table('books',
     sa.Column('id', sa.Uuid(), nullable=False),
-    sa.Column('book_public_id', sa.String(length=11), nullable=False),
+    sa.Column('book_public_id', sa.String(length=12), server_default=sa.text("'book_' || LPAD(nextval('book_public_id_seq')::text, 6, '0')"), nullable=False),
     sa.Column('title', sa.String(length=60), nullable=False),
     sa.Column('description', sa.Text(), nullable=False),
     sa.Column('pages', sa.Integer(), nullable=False),
@@ -117,9 +120,9 @@ def downgrade() -> None:
     op.drop_table('reviews')
     op.drop_table('book_genres')
     op.drop_table('book_copies')
-    op.execute('DROP TYPE IF EXISTS book_copy_status')
     op.drop_table('book_authors')
     op.drop_table('books')
+    op.execute("DROP SEQUENCE IF EXISTS book_public_id_seq")
     op.drop_table('publishers')
     op.drop_table('genres')
     op.drop_table('authors')
