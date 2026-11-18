@@ -20,8 +20,8 @@ class AddAuthor(BaseModel):
 
 
 class EditAuthor(BaseModel):
-    first_name: str
-    last_name: str
-    birth_date: date
+    first_name: str | None
+    last_name: str | None
+    birth_date: date | None
     death_date: date | None
-    country: str
+    country: str | None

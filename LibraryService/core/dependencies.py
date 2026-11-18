@@ -10,6 +10,9 @@ from services.books import BookService
 from repositories.publishers import PublisherRepository
 from services.publishers import PublisherService
 
+from repositories.authors import AuthorsRepository
+from services.authors import AuthorService
+
 
 async def get_async_db() -> AsyncGenerator[AsyncSession, None]:
     """
@@ -33,3 +36,11 @@ async def get_publishers_repo(db: AsyncSession = Depends(get_async_db)) -> Publi
 
 async def get_publishers_service(publisher_repo: PublisherRepository = Depends(get_publishers_repo)) -> PublisherService:
     return PublisherService(publisher_repo=publisher_repo)
+
+
+async def get_author_repository(db: AsyncSession = Depends(get_async_db)) -> AuthorsRepository:
+    return AuthorsRepository(db=db)
+
+
+async def get_author_service(author_repo: AuthorsRepository = Depends(get_author_repository)) -> AuthorService:
+    return AuthorService(author_repo=author_repo)
