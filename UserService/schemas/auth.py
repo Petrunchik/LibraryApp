@@ -1,18 +1,18 @@
 from uuid import UUID
 from datetime import datetime
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from core.user_role import UserRole as UserRoleScheme
 
 class UserRegisterRequest(BaseModel):
     first_name: str
     last_name: str
-    phone: str
+    phone_number: str
     email: str
     password: str
 
 class UserLoginRequest(BaseModel):
-    phone: str
+    phone_number: str
     password: str
 
 class UserAuthResponse(BaseModel):
@@ -29,8 +29,5 @@ class UserAuthResponse(BaseModel):
     created_at: datetime
     updated_at: datetime
     access_token: str
-    refresh_token: str
 
-class TokenResponse(BaseModel):
-    access_token: str
-    refresh_token: str
+    model_config = ConfigDict(from_attributes=True)

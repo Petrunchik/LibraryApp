@@ -33,6 +33,7 @@ services:
     pull_policy: build
     env_file:
       - ./UserService/.env
+    command: ["sh", "-c", "alembic upgrade head && uvicorn main:app --host 0.0.0.0 --port 8000"]
     depends_on:
       user-db:
         condition: service_healthy
@@ -56,6 +57,7 @@ services:
     pull_policy: build
     env_file:
       - ./ReservationService/.env
+    command: ["sh", "-c", "alembic upgrade head && uvicorn main:app --host 0.0.0.0 --port 8000"]
     depends_on:
       reservation-db:
         condition: service_healthy
@@ -77,6 +79,7 @@ services:
     pull_policy: build
     env_file:
       - ./PaymentService/.env
+    command: ["sh", "-c", "alembic upgrade head && uvicorn main:app --host 0.0.0.0 --port 8000"]
     depends_on:
       payment-db:
         condition: service_healthy
@@ -98,6 +101,7 @@ services:
     pull_policy: build
     env_file:
       - ./LibraryService/.env
+    command: ["sh", "-c", "alembic upgrade head && uvicorn main:app --host 0.0.0.0 --port 8000"]
     depends_on:
       library-db:
         condition: service_healthy
@@ -119,6 +123,7 @@ services:
     pull_policy: build
     env_file:
       - ./FineService/.env
+    command: ["sh", "-c", "alembic upgrade head && uvicorn main:app --host 0.0.0.0 --port 8000"]
     depends_on:
       fine-db:
         condition: service_healthy

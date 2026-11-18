@@ -13,6 +13,8 @@ class Settings(BaseSettings):
     algorithm: str
     secret_key: str
     rabbitmq_url: str
+    access_token_expire_minutes: int
+    refresh_token_expire_days: int
 
     model_config = SettingsConfigDict(
         env_file=".env",

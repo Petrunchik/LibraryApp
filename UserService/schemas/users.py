@@ -5,6 +5,7 @@ from pydantic import BaseModel
 
 from schemas.auth import UserRoleScheme
 
+
 class UserResponse(BaseModel):
     id: UUID
     user_public_id: str
@@ -29,3 +30,11 @@ class UserBlockRequest(BaseModel):
     user_public_id: str
     is_blocked: bool
     reason: str
+
+
+class UserRegister(BaseModel):
+    first_name: str
+    last_name: str
+    phone_number: str
+    email: str
+    password: str
